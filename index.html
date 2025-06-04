@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- puto el que lee -->
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -9,7 +10,7 @@
 </head>
 <body>
 
-<nav>
+<nav id="main-navbar">
     <div class="logo">
         <?xml version="1.0" encoding="UTF-8"?>
         <svg id="uuid-f33d28ef-c1b8-412c-9527-9198267e74c2" xmlns="http://www.w3.org/2000/svg" width="129.484" height="66.712" viewBox="0 0 129.484 66.712">
@@ -24,37 +25,42 @@
             <polygon points="84.219 38.471 77.117 38.211 76.939 34.703 84.653 34.774 84.219 38.471" fill="#69b430"/>
         </svg>
     </div>
-    <div class="nav-links">
-        <a href="#sobre-mi">Sobre mí</a>
-        <a href="#proyectos">Proyectos</a>
-        <a href="#contacto">Contacto</a>
-    </div>
-    <button id="modo-toggle" aria-label="Cambiar modo">☀️</button>
 
-  </nav>
+    <ul class="nav-list" id="menuNavPrincipal">
+        <button class="cerrar-menu" id="cerrarMenuBtn" aria-label="Cerrar menú">✖️</button>
+        <li><a href="#sobre-mi">Sobre mí</a></li>
+        <li><a href="#proyectos">Proyectos</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+    </ul>
+
+    <div class="controles-nav">
+        <button id="modo-toggle" aria-label="Cambiar modo">☀️</button>
+        <button class="abrir-menu" id="abrirMenuBtn" aria-label="Abrir menú">☰</button>
+    </div>
+</nav>
 
   <main>
-    <section id="sobre-mi">
-      <h2>Sobre mí</h2>
-      <p>Soy estudiante de diseño multimedial, con conocimientos en informática, reparación de hardware y software, y amante de la tecnología y el desarrollo web.</p>
-    </section>
+<section id="sobre-mi">
+    <div class="sobre-mi-card">
+        <div class="sobre-mi-imagen-container">
+            <img src="img/yop.jpg" alt="yop" class="sobre-mi-foto">
+        </div>
+        <div class="sobre-mi-texto-container">
+            <h2>¿Quien soy?</h2>
+            <p>Me llamo Marcos pero todos me dicen Cepo, soy estudiante de la carrera Diseño Multimedial en la UNLP. Diseño cosas y programo otras cosas. También soy peleador amateur de Kick Boxing en la academia Invictus y me encantan los video juegos, todos, pero en especial los de rol.</p>
+            </div>
+    </div>
+</section>
 
 <section id="proyectos">
     <h2>Proyectos</h2>
-    <p>Acá podes ver algunos de los trabajos y proyectos que realice, incluyendo mis proyectos acad y personales.</p>
+    <p>Acá podes ver algunos de los trabajos y proyectos que realice, incluyendo mis proyectos academicos y personales.</p>
 
-    <h3>Trabajos de la Facultad</h3>
-        <a href="https://github.com/cepoide/ipmi/tree/tp1/tp1" target="_blank" class="proyecto-item">
-        <h4>Dibujo básico</h4>
-        <img src="img/pretp1.png" alt="Captura de pantalla de la aplicación X" class="captura-proyecto">
-        <p>En esta entrega se exploraron las formas primitivas de dibujo con Processing y las diferencias alernativas de composición que ofrecen el entorno y las coordenadas para crear un grafismo figurativo.</p>
-</a>
-<a href="https://github.com/cepoide/ipmi/tree/tp2" target="_blank" class="proyecto-item">
-        <h4>Variables y Condicionales</h4>
-        <img src="img/pretp2.png" alt="Captura de pantalla de la aplicación X" class="captura-proyecto">
-        <p>En esta entrega se abordo el uso de variables y condicionales, haciendo una presentación al estilo PowerPoint. El tema elegido fue la novela grafica "Invencible"</p>
-</a>
-</section>
+    <h3></h3>
+    <div id="lista-proyectos-facultad" class="proyectos-grid-container">
+        </div>
+
+    </section>
 
     <section id="contacto">
       <h2>Contacto</h2>
@@ -64,10 +70,6 @@
       </ul>
     </section>
   </main>
-
-  <script src="scripts.js"></script>
-</body>
-</html>
 
   <script src="scripts.js"></script>
 </body>

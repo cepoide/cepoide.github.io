@@ -1,4 +1,10 @@
-/* Estilos básicos */
+/* Estilos básicos y reseteo */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -11,20 +17,22 @@ body {
 }
 
 /* --- BARRA DE NAVEGACIÓN --- */
-nav {
+nav#main-navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px; /* 0 padding vertical, 20px padding horizontal */
-    height: 65px;    /* Altura de la barra de navegación, ajusta a tu gusto */
+    padding: 0 20px;
+    height: 65px;
     background-color: #f8f8f8; /* Nav claro para MODO CLARO */
     border-bottom: 1px solid #eeeeee;
     transition: background-color 0.3s ease, border-bottom 0.3s ease;
+    position: relative; /* Para el posicionamiento del menú móvil si fuera necesario */
 }
 
 .logo {
-    height: 45px;  /* Altura ajustada para el logo */
+    height: 45px;
     width: auto;
+    z-index: 1001; /* Para asegurar que el logo esté sobre el overlay del menú si se superponen */
 }
 
 .logo svg {
@@ -33,24 +41,45 @@ nav {
     display: block;
 }
 
-.nav-links {
-  display:flex;
-  gap: 25px; /* Espacio entre enlaces */
+/* Lista de navegación (Escritorio) */
+ul.nav-list {
+    list-style-type: none;
+    display: flex; 
+    align-items: center;
+    gap: 10px; /* AJUSTADO: Espacio entre los "botones" de navegación */
+    margin: 0; 
+    padding: 0; 
 }
 
-nav a {
-  text-decoration: none;
-  padding: 5px 0; 
-  color: #555555; /* Color enlaces para Nav claro */
-  transition: color 0.3s ease;
+ul.nav-list li a { /* NUEVOS ESTILOS PARA LOS BOTONES */
+    text-decoration: none;
+    padding: 10px 18px;   /* Aumento de padding para dar más cuerpo */
+    color: #555555;       /* Color de texto original en modo claro */
+    border-radius: 25px;  /* Esquinas redondeadas para efecto píldora */
+    font-weight: 500;     /* Un poco más de grosor a la fuente (opcional) */
+    transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease; /* Transiciones suaves */
 }
 
-nav a:hover {
-  text-decoration: underline;
-  color: #007bff; /* Color hover enlaces para Nav claro */
+ul.nav-list li a:hover { /* NUEVOS ESTILOS HOVER */
+    color: #ffffff;
+    background-color: #474747;
+    transform: translateY(-2px); /* Pequeño efecto de elevación (opcional) */
 }
 
-#modo-toggle {
+ul.nav-list li a:active { 
+    transform: translateY(0px);
+    background-color: #606060;
+}
+
+
+/* Contenedor para botones a la derecha del nav */
+.controles-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; 
+}
+
+#modo-toggle { 
   padding: 8px 10px;
   border: none;
   border-radius: 4px;
@@ -61,17 +90,37 @@ nav a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333333; /* Color icono para Nav claro */
+  color: #333333; 
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #modo-toggle:hover {
-  background-color: #e0e0e0; /* Color hover icono para Nav claro */
+  background-color: #e0e0e0; 
 }
+
+/* Botones de abrir/cerrar menú */
+.abrir-menu,
+.cerrar-menu {
+    display: none; 
+    border: 0;
+    font-size: 1.5rem; 
+    background-color: transparent;
+    cursor: pointer;
+    padding: 5px; 
+}
+
+.abrir-menu {
+    color: #333333;
+}
+
+.cerrar-menu {
+    color: #ececec;
+}
+
 
 /* --- ESTILOS DEL LOGO SVG (COLORES) --- */
 .logo #letras-negras {
-    fill: #1d1d1b; /* Letras oscuras para MODO CLARO */
+    fill: #1d1d1b; 
     transition: fill 0.3s ease;
 }
 
@@ -80,13 +129,12 @@ main {
   background-color: #fff;
   padding: 40px;
   max-width: 900px;
-  margin: 0px auto 40px auto; /* Margen inferior de 40px para efecto "flotante" */
-  border-radius: 0 0 12px 12px;          
+  margin: 0px auto 40px auto;
+  border-radius: 0 0 12px 12px; 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* --- SECCIÓN DE PROYECTOS --- */
 #proyectos h3 {
     margin-top: 30px;
     margin-bottom: 15px;
@@ -96,7 +144,7 @@ main {
     transition: color 0.3s ease, border-bottom 0.3s ease;
 }
 
-.proyecto-item { /* Recordar que esto ahora es una etiqueta <a> */
+.proyecto-item {
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -107,8 +155,8 @@ main {
     align-items: center;
     text-align: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    text-decoration: none; /* Quita subrayado del enlace general */
-    color: inherit;       /* Hereda color de texto, no el azul de enlace */
+    text-decoration: none;
+    color: inherit;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
@@ -120,7 +168,6 @@ main {
 .proyecto-item h4 {
     margin-top: 0;
     margin-bottom: 15px;
-    /* El color será heredado (no necesita ser azul de enlace) */
 }
 
 .captura-proyecto {
@@ -136,7 +183,7 @@ main {
 .proyecto-item p {
     font-size: 0.95em;
     line-height: 1.6;
-    margin-bottom: 0; /* Ajustado ya que es el último elemento visible dentro del 'a' */
+    margin-bottom: 0;
 }
 
 /* --- MODO OSCURO --- */
@@ -147,17 +194,22 @@ body.oscuro {
 }
 
 /* Nav en Modo Oscuro */
-body.oscuro nav {
+body.oscuro nav#main-navbar {
   background-color: #333;
   border-bottom: 1px solid #444;
 }
 
-body.oscuro nav a {
-  color: #ddd;
+body.oscuro ul.nav-list li a {
+  color: #ddd; 
 }
 
-body.oscuro nav a:hover {
-  color: #fff; 
+body.oscuro ul.nav-list li a:hover {
+  color: #ffffff;
+  background-color: #191919; 
+}
+
+body.oscuro ul.nav-list li a:active {
+    background-color: #000000;
 }
 
 body.oscuro #modo-toggle {
@@ -169,9 +221,14 @@ body.oscuro #modo-toggle:hover {
   background-color: #4a4a4a;
 }
 
+body.oscuro .abrir-menu { 
+    color: #fff;
+}
+
+
 /* Logo en Modo Oscuro */
 body.oscuro .logo #letras-negras {
-    fill: #f4f4f4; /* Letras claras para MODO OSCURO */
+    fill: #f4f4f4;
 }
 
 /* Main en Modo Oscuro */
@@ -196,24 +253,192 @@ body.oscuro .proyecto-item:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* --- MEDIA QUERIES (Al final) --- */
+/* Division de proyectos con contacto*/
+section#contacto {
+  margin-top: 40px;
+}
+
+/* --- ESTILOS PARA LA SECCIÓN "SOBRE MÍ" --- */
+#sobre-mi {
+    padding-top: 20px;
+}
+
+.sobre-mi-card {
+    display: flex; 
+    align-items: flex-start; 
+    gap: 30px; 
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 30px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    margin-bottom: 30px; 
+}
+
+.sobre-mi-imagen-container {
+    flex: 0 0 180px; 
+}
+
+.sobre-mi-foto {
+    width: 100%;
+    height: auto; 
+    border-radius: 8px; 
+    display: block; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+}
+
+.sobre-mi-texto-container {
+    flex: 1; 
+}
+
+.sobre-mi-texto-container h2 {
+    margin-top: 0; 
+    margin-bottom: 15px;
+    color: #333; 
+    font-size: 1.8em; 
+}
+
+.sobre-mi-texto-container p {
+    font-size: 1em; 
+    line-height: 1.7;
+    margin-bottom: 15px; 
+    color: #555; 
+}
+.sobre-mi-texto-container p:last-child {
+    margin-bottom: 0; 
+}
+
+
+/* --- "SOBRE MÍ" EN MODO OSCURO --- */
+body.oscuro .sobre-mi-card {
+    background-color: #4a4a4a;
+    border-color: #5a5a5a;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.oscuro .sobre-mi-texto-container h2 {
+    color: #e0e0e0;
+}
+
+body.oscuro .sobre-mi-texto-container p {
+    color: #c7c7c7;
+}
+
+
+/* --- "SOBRE MÍ" RESPONSIVE (PARA MÓVILES) --- */
+@media screen and (max-width: 768px) { 
+    .sobre-mi-card {
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
+        padding: 20px;
+        gap: 20px; 
+    }
+
+    .sobre-mi-imagen-container {
+        flex-basis: auto; 
+        width: 150px; 
+    }
+    
+    .sobre-mi-foto {
+        border-radius: 50%; 
+        width: 150px;       
+        height: 150px;      
+        object-fit: cover;  
+    }
+
+    .sobre-mi-texto-container h2 {
+        font-size: 1.6em; 
+    }
+}
+
+/* Media Query para Menú Hamburguesa */
+@media screen and (max-width: 550px) {
+    ul.nav-list { 
+        opacity: 0;
+        visibility: hidden;
+        flex-direction: column; 
+        align-items: flex-start;  
+        gap: 1.5rem;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 75%; 
+        max-width: 300px; 
+        background-color: #1c1c1c; 
+        padding: 1.5rem; 
+        padding-top: 4rem; 
+        box-shadow: -5px 0 15px rgba(0, 0, 0, .25); 
+        z-index: 1000; 
+        transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s, transform 0.3s ease-in-out;
+        transform: translateX(100%); 
+    }
+
+    ul.nav-list.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0%); 
+        transition: opacity 0.3s ease-in-out, visibility 0s linear 0s, transform 0.3s ease-in-out;
+    }
+    
+    ul.nav-list .cerrar-menu { 
+        display: block; 
+        position: absolute; 
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        color: #ececec;
+    }
+
+    ul.nav-list li {
+       width: 100%;
+    }
+
+    ul.nav-list li a { /* Enlaces dentro del panel móvil */
+        color: #ececec; /* Mantiene el color base del texto claro */
+        display: block; 
+        padding: 0.75rem 0; 
+        font-size: 1.1rem;
+        border-radius: 0; /* Quita el border-radius de píldora en el panel */
+        background-color: transparent; /* Asegura que no haya fondo de píldora */
+        transform: none; /* Quita el efecto de elevación */
+    }
+     ul.nav-list li a:hover { /* Hover para enlaces en panel móvil */
+        color: #007bff; 
+        background-color: rgba(255, 255, 255, 0.1); /* Un sutil highlight de fondo */
+        text-decoration: none; 
+        transform: none;
+    }
+    ul.nav-list li a:active {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: none;
+    }
+
+
+    .abrir-menu { 
+        display: block;
+    }
+}
+
+
+/* Media Query para diseño de Proyectos en columnas (existente) */
 @media (min-width: 768px) {
-    #proyectos {
+    .proyectos-grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 25px;
     }
-    /* Ajustar un poco el margen para que el grid funcione bien */
     #proyectos h2, 
-    #proyectos > p:first-of-type, /* El <p> introductorio de la sección proyectos */
-    #proyectos h3 {              /* Los subtítulos como "Trabajos de la Facultad" */
-        grid-column: 1 / -1; /* Ocupa todas las columnas */
-        /* text-align: center;  Ya lo heredan o no es necesario para h2/p, h3 ya lo tiene */
+    #proyectos > p:first-of-type,
+    #proyectos h3 {
+        grid-column: 1 / -1;
     }
     #proyectos h3 {
-        text-align: center; /* Centrar específicamente los h3 */
+        text-align: center;
     }
-    .proyecto-item {
-        margin-bottom: 0; /* En grid, el gap maneja el espacio */
+    .proyecto-item { 
+        margin-bottom: 0; /* El 'gap' del grid para el espaciado */
     }
 }

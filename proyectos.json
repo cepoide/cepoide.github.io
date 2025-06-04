@@ -1,0 +1,18 @@
+[
+  {
+    "titulo": "Dibujo básico",
+    "imagenUrl": "img/pretp1.png",
+    "altImagen": "Captura de pantalla del proyecto Dibujo básico",
+    "descripcion": "En esta entrega se exploraron las formas primitivas de dibujo con Processing y las diferencias alternativas de composición que ofrecen el entorno y las coordenadas para crear un grafismo figurativo.",
+    "enlaceUrl": "https://github.com/cepoide/ipmi/tree/tp1/tp1",
+    "categoria": "Facultad" 
+  },
+  {
+    "titulo": "Variables y Condicionales",
+    "imagenUrl": "img/pretp2.png",
+    "altImagen": "Captura de pantalla del proyecto Variables y Condicionales",
+    "descripcion": "En esta entrega se abordó el uso de variables y condicionales, haciendo una presentación al estilo PowerPoint. El tema elegido fue la novela gráfica \"Invencible\"",
+    "enlaceUrl": "https://github.com/cepoide/ipmi/tree/tp2",
+    "categoria": "Facultad"
+  }
+]
