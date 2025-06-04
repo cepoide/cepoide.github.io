@@ -157,6 +157,8 @@ body.oscuro #proyectos h3 {
     text-align: center; /* Centra el texto */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transición para efecto hover */
+    text-decoration: none; /* Para quitar el subrayado del enlace */
+    color: inherit;       /* Para que el texto use el color definido en 'main' o 'body' */
 }
 
 body.oscuro .proyecto-item {
@@ -177,28 +179,6 @@ body.oscuro .proyecto-item:hover {
 .proyecto-item h4 {
     margin-top: 0;
     margin-bottom: 15px;
-}
-
-/* ESTILOS CLAVE: para el enlace dentro del h4 */
-.proyecto-item h4 .enlace-proyecto {
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s ease, text-decoration 0.3s ease;
-    display: inline-block;
-}
-
-.proyecto-item h4 .enlace-proyecto:hover {
-    color: #0056b3;
-    text-decoration: underline;
-}
-
-/* ESTILOS CLAVE: para el enlace en modo oscuro */
-body.oscuro .proyecto-item h4 .enlace-proyecto {
-    color: #8ac0ff;
-}
-
-body.oscuro .proyecto-item h4 .enlace-proyecto:hover {
-    color: #b3d1ff;
 }
 
 .captura-proyecto {
@@ -255,5 +235,7 @@ body.oscuro .proyecto-item .ver-mas:hover {
     }
     .proyecto-item {
         margin-bottom: 0;
+    }
+}
     }
 }
