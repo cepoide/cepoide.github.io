@@ -30,7 +30,7 @@ nav#main-navbar {
 }
 
 .logo {
-    height: 45px;
+    height: 40px;
     width: auto;
     z-index: 1001; /* Para asegurar que el logo esté sobre el overlay del menú si se superponen */
 }
