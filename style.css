@@ -1,0 +1,219 @@
+/* Estilos básicos */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4; /* Fondo general modo claro */
+  background-image: radial-gradient(#ccc 1px, transparent 1px);
+  background-size: 15px 15px;
+  color: #333; /* Color de texto general modo claro */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- BARRA DE NAVEGACIÓN --- */
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; /* 0 padding vertical, 20px padding horizontal */
+    height: 65px;    /* Altura de la barra de navegación, ajusta a tu gusto */
+    background-color: #f8f8f8; /* Nav claro para MODO CLARO */
+    border-bottom: 1px solid #eeeeee;
+    transition: background-color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.logo {
+    height: 45px;  /* Altura ajustada para el logo */
+    width: auto;
+}
+
+.logo svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.nav-links {
+  display:flex;
+  gap: 25px; /* Espacio entre enlaces */
+}
+
+nav a {
+  text-decoration: none;
+  padding: 5px 0; 
+  color: #555555; /* Color enlaces para Nav claro */
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  text-decoration: underline;
+  color: #007bff; /* Color hover enlaces para Nav claro */
+}
+
+#modo-toggle {
+  padding: 8px 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333333; /* Color icono para Nav claro */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#modo-toggle:hover {
+  background-color: #e0e0e0; /* Color hover icono para Nav claro */
+}
+
+/* --- ESTILOS DEL LOGO SVG (COLORES) --- */
+.logo #letras-negras {
+    fill: #1d1d1b; /* Letras oscuras para MODO CLARO */
+    transition: fill 0.3s ease;
+}
+
+/* --- CONTENIDO PRINCIPAL (MAIN) --- */
+main {
+  background-color: #fff;
+  padding: 40px;
+  max-width: 900px;
+  margin: 0px auto 40px auto; /* Margen inferior de 40px para efecto "flotante" */
+  border-radius: 0 0 12px 12px;          
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- SECCIÓN DE PROYECTOS --- */
+#proyectos h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.proyecto-item { /* Recordar que esto ahora es una etiqueta <a> */
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    text-decoration: none; /* Quita subrayado del enlace general */
+    color: inherit;       /* Hereda color de texto, no el azul de enlace */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.proyecto-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.proyecto-item h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    /* El color será heredado (no necesita ser azul de enlace) */
+}
+
+.captura-proyecto {
+    max-width: 100%;
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.proyecto-item p {
+    font-size: 0.95em;
+    line-height: 1.6;
+    margin-bottom: 0; /* Ajustado ya que es el último elemento visible dentro del 'a' */
+}
+
+/* --- MODO OSCURO --- */
+body.oscuro {
+  background-color: #2b2b2b;
+  background-image: radial-gradient(#444 1px, transparent 1px);
+  color: #e0e0e0;
+}
+
+/* Nav en Modo Oscuro */
+body.oscuro nav {
+  background-color: #333;
+  border-bottom: 1px solid #444;
+}
+
+body.oscuro nav a {
+  color: #ddd;
+}
+
+body.oscuro nav a:hover {
+  color: #fff; 
+}
+
+body.oscuro #modo-toggle {
+  background-color: transparent;
+  color: #fff;
+}
+
+body.oscuro #modo-toggle:hover {
+  background-color: #4a4a4a;
+}
+
+/* Logo en Modo Oscuro */
+body.oscuro .logo #letras-negras {
+    fill: #f4f4f4; /* Letras claras para MODO OSCURO */
+}
+
+/* Main en Modo Oscuro */
+body.oscuro main {
+    background-color: #3a3a3a;
+    color: #e0e0e0;
+}
+
+/* Proyectos en Modo Oscuro */
+body.oscuro #proyectos h3 {
+    color: #bbb;
+    border-color: #555;
+}
+
+body.oscuro .proyecto-item {
+    background-color: #4a4a4a;
+    border-color: #5a5a5a;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.oscuro .proyecto-item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- MEDIA QUERIES (Al final) --- */
+@media (min-width: 768px) {
+    #proyectos {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    /* Ajustar un poco el margen para que el grid funcione bien */
+    #proyectos h2, 
+    #proyectos > p:first-of-type, /* El <p> introductorio de la sección proyectos */
+    #proyectos h3 {              /* Los subtítulos como "Trabajos de la Facultad" */
+        grid-column: 1 / -1; /* Ocupa todas las columnas */
+        /* text-align: center;  Ya lo heredan o no es necesario para h2/p, h3 ya lo tiene */
+    }
+    #proyectos h3 {
+        text-align: center; /* Centrar específicamente los h3 */
+    }
+    .proyecto-item {
+        margin-bottom: 0; /* En grid, el gap maneja el espacio */
+    }
+}
