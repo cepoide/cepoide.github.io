@@ -14,5 +14,13 @@
     "descripcion": "En esta entrega se abordó el uso de variables y condicionales, haciendo una presentación al estilo PowerPoint. El tema elegido fue la novela gráfica \"Invencible\"",
     "enlaceUrl": "https://github.com/cepoide/ipmi/tree/tp2",
     "categoria": "Facultad"
+  },
+  {
+    "titulo": "Viejo choto",
+    "imagenUrl": "img/viejochoto.png",
+    "altImagen": "Captura de pantalla del juego Viejo Choto",
+    "descripcion": "Este es un video juego de plataformas en 2D realizado en Processing y Aseprite (todavia en desarrollo)",
+    "enlaceUrl": "https://github.com/cepoide/viejochoto",
+    "categoria": "Personal"
   }
 ]

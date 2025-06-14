@@ -57,9 +57,12 @@ async function cargarProyectos() {
         }
         const proyectos = await response.json();
 
+        // 1. OBTENEMOS AMBOS CONTENEDORES
         const contenedorFacultad = document.getElementById('lista-proyectos-facultad');
+        const contenedorPersonales = document.getElementById('lista-proyectos-personales');
 
-        if (contenedorFacultad) {
+        // Verifica que al menos uno de los contenedores exista para no hacer trabajo de más
+        if (contenedorFacultad || contenedorPersonales) {
             proyectos.forEach(proyecto => {
                 const proyectoCard = `
                     <a href="${proyecto.enlaceUrl}" target="_blank" class="proyecto-item">
@@ -69,22 +72,20 @@ async function cargarProyectos() {
                     </a>
                 `;
                 
+                // 2. LÓGICA PARA DISTRIBUIR LOS PROYECTOS
                 if (proyecto.categoria === "Facultad" && contenedorFacultad) {
                     contenedorFacultad.innerHTML += proyectoCard;
-                } 
+                } else if (proyecto.categoria === "Personal" && contenedorPersonales) {
+                    contenedorPersonales.innerHTML += proyectoCard;
+                }
             });
-        } else {
-            console.error("El contenedor de proyectos 'lista-proyectos-facultad' no fue encontrado.");
         }
 
     } catch (error) {
         console.error("No se pudieron cargar los proyectos:", error);
-        const contenedorProyectos = document.getElementById('lista-proyectos-facultad'); // O un div de error general
-        if (contenedorProyectos) {
-            contenedorProyectos.innerHTML = "<p>Error al cargar los proyectos. Intenta de nuevo más tarde.</p>";
-        }
+        // Puedes añadir un mensaje de error en la página si quieres
     }
 }
 
-// Llamar a la función cuando el DOM esté cargado
+// Asegúrate de que esta línea esté al final para llamar a la función
 document.addEventListener('DOMContentLoaded', cargarProyectos);
