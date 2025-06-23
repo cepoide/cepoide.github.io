@@ -110,7 +110,10 @@
 
         async function setupAuthenticated(token) {
             try {
-                octokit = new octokit.Octokit({ auth: token });
+                // --- LÍNEA CORREGIDA ---
+                // Se usa "Octokit" con mayúscula, no "octokit"
+                octokit = new Octokit({ auth: token });
+                
                 await octokit.request('GET /user'); // Verifica que el token es válido
                 showEditorView();
                 await loadProjects();
@@ -139,8 +142,9 @@
 
         function renderUI(projects) {
             projectListContainer.innerHTML = '';
-            if (tinymce.get() && tinymce.get().length > 0) {
-                 tinymce.remove();
+            // Inicializa o reinicia TinyMCE de forma segura
+            if (window.tinymce) {
+                tinymce.remove();
             }
             projects.forEach((project, index) => renderProjectForm(project, index, false));
             tinymce.init({ selector: 'textarea.descripcion', plugins: 'code lists link image', toolbar: 'undo redo | blocks | bold italic | bullist numlist | link image | code' });
@@ -160,7 +164,7 @@
             `;
             projectListContainer.appendChild(projectDiv);
             if (isNew) {
-                tinymce.init({ selector: `#editor-${index}`, plugins: 'code lists link image', toolbar: 'undo redo | blocks | bold italic | bullist numlist | link image | code' });
+                tinymce.init({ selector: `#editor-${index}` });
             }
             projectDiv.querySelector('.delete-button').addEventListener('click', (e) => {
                 if (confirm('¿Estás seguro?')) { e.target.closest('.editor-proyecto-item').remove(); }
