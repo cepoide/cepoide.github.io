@@ -1,10 +1,12 @@
+# === VERSIÓN CORREGIDA CON ESPACIOS ESTÁNDAR ===
+
 # Backend: Configuración para conectar con tu repositorio de GitHub
 backend:
   name: github
   repo: cepoide/cepoide.github.io
   branch: main
   auth_type: implicit
-  app_id: Ov23liw9dOe4vGZ3Ueqy # ¡No olvides pegar tu Client ID aquí!
+  app_id: Ov23liw9dOe4vGZ3Ueqy # ¡RECUERDA! Pega tu Client ID aquí si este no es.
 
 # Media: Configuración para las imágenes
 media_folder: "img"
@@ -12,14 +14,14 @@ public_folder: "/img"
 
 # Collections: Define el contenido editable
 collections:
-  - name: "proyectos"        # Nombre interno de la colección
-    label: "Proyectos"       # Nombre que verás en la barra lateral
-    files:                   # Usamos la propiedad 'files' que pedía el error
-      - name: "lista_proyectos"  # Un nombre interno para este grupo de datos
-        label: "Lista de Proyectos" # El título que verás en la página principal del panel
-        file: "proyectos.json"      # El archivo que contiene la lista
-        create: true                # Permitir añadir nuevos proyectos a la lista
-        fields:                     # Los campos para CADA ÍTEM de la lista
+  - name: "proyectos"
+    label: "Proyectos"
+    files:
+      - name: "lista_proyectos"
+        label: "Lista de Proyectos"
+        file: "proyectos.json"
+        create: true
+        fields:
           - {label: "Título", name: "titulo", widget: "string"}
           - {label: "Descripción", name: "descripcion", widget: "markdown"}
           - {label: "URL de la Imagen", name: "imagenUrl", widget: "image"}
