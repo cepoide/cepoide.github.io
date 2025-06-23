@@ -157,7 +157,7 @@
             const url = `${API_URL}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
             const data = await apiRequest('GET', url);
             fileSha = data.sha;
-            const projects = JSON.parse(atob(data.content));
+            const projects = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             renderUI(projects);
             statusElem.textContent = 'Proyectos cargados.';
         } catch (error) {
