@@ -6,22 +6,21 @@
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="adminstyle.css" />
-    
     <script src="libs/tinymce/tinymce.min.js"></script>
-    
     <script src="admin.js" defer></script>
 </head>
 <body>
     <main id="login-view" class="admin-main admin-view">
-        <h1>Alto ahi maquina</h1>
+        <h1 style="text-align: center;">Alto ahi maquina</h1>
         <img src="img/altoahimaquina.jpg" alt="Imagen de login" class="login-image">
         <p>Para entrar tenes que decirme la contraseña</p>
         <textarea id="token-input" placeholder="La contraseña"></textarea>
         <div>
-            <button id="save-token-button" class="admin-button btn-create">Guardar la contraseña y entrar</button>
+            <button id="save-token-button" class="admin-button btn-create">Guardar contraseña y Entrar</button>
         </div>
         <p id="login-status"></p>
-        </main>
+    </main>
+
     <div id="panel-container" class="admin-view">
         <nav class="admin-nav">
             <div class="nav-links">
@@ -35,9 +34,7 @@
         <main class="admin-main">
             <div id="edit-view" class="admin-view">
                 <h2>Proyectos Existentes</h2>
-                <div id="edit-tabs-nav"></div>
-                <div id="edit-tabs-content"></div>
-                <button id="save-all-button" class="admin-button btn-save" style="margin-top: 20px;">Guardar Todos los Cambios</button>
+                <div id="project-accordion"></div> <button id="save-all-button" class="admin-button btn-save" style="margin-top: 20px;">Guardar Todos los Cambios</button>
                 <p id="status"></p>
             </div>
             <div id="create-view" class="admin-view">

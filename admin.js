@@ -1,32 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- CONFIGURACIÓN Y ELEMENTOS GLOBALES ---
-    const GITHUB_CONFIG = {
-        owner: 'cepoide',
-        repo: 'cepoide.github.io',
-        path: 'proyectos.json',
-        branch: 'main'
-    };
+    const GITHUB_CONFIG = { owner: 'cepoide', repo: 'cepoide.github.io', path: 'proyectos.json', branch: 'main' };
     const API_URL = 'https://api.github.com';
-    let githubToken;
-    let fileSha;
-    let allProjects = [];
+    let githubToken, fileSha, allProjects = [];
 
     const TINYMCE_CONFIG = {
         plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
         toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media table | code fullscreen preview | help',
         menubar: 'file edit view insert format tools table help',
-        skin: 'oxide', 
-        content_css: 'default'
+        skin: 'oxide', content_css: 'default'
     };
-    
-    const TINYMCE_CONFIG_DARK = {
-        ...TINYMCE_CONFIG,
-        skin: 'oxide-dark',
-        content_css: 'dark'
-    };
+    const TINYMCE_CONFIG_DARK = { ...TINYMCE_CONFIG, skin: 'oxide-dark', content_css: 'dark' };
 
-    // Vistas principales y elementos de UI
     const loginView = document.getElementById('login-view');
     const panelContainer = document.getElementById('panel-container');
     const editView = document.getElementById('edit-view');
@@ -34,48 +20,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const navEdit = document.getElementById('nav-edit');
     const navCreate = document.getElementById('nav-create');
     const themeToggleButton = document.getElementById('admin-theme-toggle');
-    const tabsNavContainer = document.getElementById('edit-tabs-nav');
-    const tabsContentContainer = document.getElementById('edit-tabs-content');
-    const saveTokenButton = document.getElementById('save-token-button');
-    const tokenInput = document.getElementById('token-input');
-    const loginStatusElem = document.getElementById('login-status');
+    const accordionContainer = document.getElementById('project-accordion');
     
-    // --- LÓGICA DE TEMA OSCURO/CLARO ---
+    // --- LÓGICA DE TEMA ---
     function applyTheme(theme) {
         const isDark = theme === 'oscuro';
         document.body.classList.toggle('oscuro', isDark);
         themeToggleButton.textContent = isDark ? '🌙' : '☀️';
-        
         if (window.tinymce && tinymce.get().length > 0) {
             tinymce.remove();
             tinymce.init({ ... (isDark ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG), selector: 'textarea.descripcion' });
         }
     }
-
     themeToggleButton.addEventListener('click', () => {
-        const currentTheme = document.body.classList.contains('oscuro') ? 'claro' : 'oscuro';
-        localStorage.setItem('admin_theme', currentTheme);
-        applyTheme(currentTheme);
+        const newTheme = document.body.classList.contains('oscuro') ? 'claro' : 'oscuro';
+        localStorage.setItem('admin_theme', newTheme);
+        applyTheme(newTheme);
     });
 
-    // --- LÓGICA PRINCIPAL DE LA APP ---
+    // --- LÓGICA DE APP Y AUTENTICACIÓN ---
     function initApp() {
+        applyTheme(localStorage.getItem('admin_theme') || 'claro');
         const savedToken = localStorage.getItem('github_token');
-        const savedTheme = localStorage.getItem('admin_theme') || 'claro';
-        applyTheme(savedTheme);
-
-        if (savedToken) {
-            setupAuthenticated(savedToken);
-        } else {
-            loginView.style.display = 'block';
-        }
+        if (savedToken) setupAuthenticated(savedToken);
+        else loginView.style.display = 'block';
     }
 
-    saveTokenButton.addEventListener('click', () => {
-        const token = tokenInput.value.trim();
+    document.getElementById('save-token-button').addEventListener('click', () => {
+        const token = document.getElementById('token-input').value.trim();
         if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
             localStorage.setItem('github_token', token);
-            loginStatusElem.textContent = '¡Token guardado! Verificando...';
             setupAuthenticated(token);
         } else {
             alert('Por favor, pega un Token de Acceso Personal de GitHub válido.');
@@ -87,10 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/user`, { headers: { 'Authorization': `Bearer ${githubToken}` } });
             if (!response.ok) throw new Error(`Token inválido: ${response.status}`);
-            
             loginView.style.display = 'none';
             panelContainer.style.display = 'block';
-            
             await loadProjects();
             setupNavigation();
             renderCreateForm(); 
@@ -102,32 +74,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // --- LÓGICA DE NAVEGACIÓN ENTRE VISTAS ---
+    // --- LÓGICA DE NAVEGACIÓN Y VISTAS ---
     function setupNavigation() {
         navEdit.addEventListener('click', (e) => { e.preventDefault(); showView('edit'); });
         navCreate.addEventListener('click', (e) => { e.preventDefault(); showView('create'); });
     }
     
     function showView(viewName) {
-        editView.style.display = 'none';
-        createView.style.display = 'none';
-        navEdit.classList.remove('active');
-        navCreate.classList.remove('active');
-
+        [editView, createView].forEach(v => v.style.display = 'none');
+        [navEdit, navCreate].forEach(n => n.classList.remove('active'));
         if (viewName === 'edit') {
             editView.style.display = 'block';
             navEdit.classList.add('active');
-            // Activar la primera pestaña si existe
-            if(tabsNavContainer.firstChild && !tabsNavContainer.querySelector('.active')) {
-                tabsNavContainer.firstChild.click();
-            }
-        } else if (viewName === 'create') {
+        } else {
             createView.style.display = 'block';
             navCreate.classList.add('active');
         }
     }
 
-    // --- LÓGICA DE MANEJO DE PROYECTOS ---
+    // --- LÓGICA DE MANEJO DE PROYECTOS (ACORDEÓN) ---
     async function apiRequest(method, url, body = null) {
         const headers = { 'Authorization': `Bearer ${githubToken}`, 'Accept': 'application/vnd.github.v3+json' };
         const options = { method, headers };
@@ -147,66 +112,60 @@ document.addEventListener('DOMContentLoaded', () => {
             fileSha = data.sha;
             const decodedContent = decodeURIComponent(escape(atob(data.content)));
             allProjects = JSON.parse(decodedContent);
-            renderEditTabs(allProjects);
+            renderAccordion(allProjects);
         } catch (error) {
             console.error('Error al cargar proyectos:', error);
         }
     }
 
-    // --- FUNCIÓN CORREGIDA ---
-    function renderEditTabs(projects) {
-        tabsNavContainer.innerHTML = '';
-        tabsContentContainer.innerHTML = '';
+    function renderAccordion(projects) {
+        accordionContainer.innerHTML = '';
+        if (window.tinymce) tinymce.remove('.accordion-content .descripcion');
+        projects.forEach((p, i) => accordionContainer.appendChild(createAccordionItem(p, i)));
+    }
 
-        projects.forEach((p, i) => {
-            // Crear botón de la pestaña
-            const tabButton = document.createElement('button');
-            tabButton.textContent = p.titulo;
-            tabButton.dataset.target = `tab-${i}`;
+    function createAccordionItem(project, index) {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'accordion-item';
+
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'accordion-header';
+        headerDiv.textContent = project.titulo;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'accordion-content';
+        contentDiv.appendChild(createProjectFormElement(project, index));
+
+        headerDiv.addEventListener('click', () => {
+            const isActive = headerDiv.classList.contains('active');
+            // Cerrar todos los demás
+            accordionContainer.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+            accordionContainer.querySelectorAll('.accordion-content').forEach(c => c.style.display = 'none');
             
-            tabButton.addEventListener('click', () => {
-                // Gestionar clases activas para los botones
-                tabsNavContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                tabButton.classList.add('active');
-
-                // Ocultar todos los contenidos de las pestañas
-                tabsContentContainer.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                
-                // Mostrar el contenido de la pestaña seleccionada
-                const targetContent = document.getElementById(`tab-${i}`);
-                targetContent.classList.add('active');
-
-                // --- LÓGICA MEJORADA ---
-                // Inicializar TinyMCE solo si no ha sido inicializado antes en esta pestaña
-                const textarea = targetContent.querySelector('textarea');
+            if (!isActive) {
+                headerDiv.classList.add('active');
+                contentDiv.style.display = 'block';
+                // Inicializar TinyMCE solo si es la primera vez que se abre
+                const textarea = contentDiv.querySelector('textarea');
                 if (textarea && !textarea.dataset.initialized) {
                     const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
                     tinymce.init({ ...currentThemeConfig, selector: `#${textarea.id}` });
                     textarea.dataset.initialized = 'true';
                 }
-            });
-            tabsNavContainer.appendChild(tabButton);
-
-            // Crear contenido de la pestaña
-            const tabContent = document.createElement('div');
-            tabContent.id = `tab-${i}`;
-            tabContent.className = 'tab-content'; // Se oculta/muestra con la clase 'active'
-            tabContent.appendChild(createProjectFormElement(p, i));
-            tabsContentContainer.appendChild(tabContent);
+            }
         });
 
-        // Activar la primera pestaña por defecto
-        if (tabsNavContainer.firstChild) {
-            tabsNavContainer.firstChild.click();
-        }
+        itemDiv.appendChild(headerDiv);
+        itemDiv.appendChild(contentDiv);
+        return itemDiv;
     }
-
+    
     function renderCreateForm() {
         const container = document.getElementById('create-project-form');
         container.innerHTML = '';
+        if (window.tinymce) tinymce.remove('#create-project-form .descripcion');
         const blankProject = { titulo: "", descripcion: "", imagenUrl: "", enlaceUrl: "", categoria: "Personal" };
         container.appendChild(createProjectFormElement(blankProject, 'new'));
-        
         const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
         tinymce.init({ ...currentThemeConfig, selector: '#create-project-form .descripcion' });
     }
@@ -224,11 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         if (index !== 'new') {
             div.querySelector('.delete-button').addEventListener('click', e => {
-                if (confirm('¿Estás seguro? Los cambios se aplicarán al presionar "Guardar Todos los Cambios".')) {
-                    const tabButtonToRemove = tabsNavContainer.querySelector(`[data-target="tab-${index}"]`);
-                    if (tabButtonToRemove) tabButtonToRemove.remove();
-                    e.target.closest('.editor-proyecto-item').parentElement.remove();
-                    if(tabsNavContainer.firstChild) tabsNavContainer.firstChild.click();
+                if (confirm('¿Estás seguro? El proyecto se eliminará de la lista. Deberás presionar "Guardar Todos los Cambios" para confirmar.')) {
+                    e.target.closest('.accordion-item').remove();
                 }
             });
         }
@@ -240,10 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             statusElement.textContent = 'Guardando...';
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(projectsToSave, null, 2))));
             const url = `${API_URL}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
-            const body = {
-                message: `[Admin Panel] Actualización de proyectos ${new Date().toISOString()}`,
-                content, sha: fileSha, branch: GITHUB_CONFIG.branch
-            };
+            const body = { message: `[Admin Panel] Actualización de proyectos`, content, sha: fileSha, branch: GITHUB_CONFIG.branch };
             const data = await apiRequest('PUT', url, body);
             fileSha = data.content.sha;
             statusElement.textContent = '¡Guardado con éxito!';
@@ -256,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     document.getElementById('save-all-button').addEventListener('click', async () => {
-        const projectForms = document.querySelectorAll('#edit-tabs-content .editor-proyecto-item');
+        const projectForms = document.querySelectorAll('#project-accordion .editor-proyecto-item');
         const updatedProjects = [];
         projectForms.forEach(form => {
             const titulo = form.querySelector('.titulo').value;
@@ -271,17 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (await saveChanges(updatedProjects, document.getElementById('status'))) {
             allProjects = updatedProjects;
-            renderEditTabs(allProjects);
         }
     });
 
     document.getElementById('save-new-button').addEventListener('click', async () => {
         const form = document.getElementById('create-project-form').querySelector('.editor-proyecto-item');
         const titulo = form.querySelector('.titulo').value;
-        if (!titulo) {
-            alert("El título no puede estar vacío.");
-            return;
-        }
+        if (!titulo) { alert("El título no puede estar vacío."); return; }
         const newProject = {
             titulo,
             descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
@@ -294,9 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (await saveChanges(projectsToSave, document.getElementById('create-status'))) {
             await loadProjects();
             showView('edit');
-            setTimeout(() => {
-                if(tabsNavContainer.firstChild) tabsNavContainer.firstChild.click();
-            }, 100);
         }
     });
 
