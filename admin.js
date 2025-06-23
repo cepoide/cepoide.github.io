@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
         plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
         toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media table | code fullscreen preview | help',
         menubar: 'file edit view insert format tools table help',
-        skin: 'oxide', // Valor por defecto
-        content_css: 'default' // Valor por defecto
+        skin: 'oxide', 
+        content_css: 'default'
     };
     
     const TINYMCE_CONFIG_DARK = {
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('oscuro', isDark);
         themeToggleButton.textContent = isDark ? '🌙' : '☀️';
         
-        // Recargar TinyMCE con el tema correcto si ya está inicializado
         if (window.tinymce && tinymce.get().length > 0) {
             tinymce.remove();
             tinymce.init({ ... (isDark ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG), selector: 'textarea.descripcion' });
@@ -94,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             await loadProjects();
             setupNavigation();
-            renderCreateForm(); // Preparar el formulario de creación
-            showView('create'); // Vista por defecto es "Crear"
+            renderCreateForm(); 
+            showView('create'); 
         } catch (error) {
             console.error("Fallo de autenticación:", error);
             localStorage.removeItem('github_token');
@@ -118,6 +117,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (viewName === 'edit') {
             editView.style.display = 'block';
             navEdit.classList.add('active');
+            // Activar la primera pestaña si existe
+            if(tabsNavContainer.firstChild && !tabsNavContainer.querySelector('.active')) {
+                tabsNavContainer.firstChild.click();
+            }
         } else if (viewName === 'create') {
             createView.style.display = 'block';
             navCreate.classList.add('active');
@@ -150,42 +153,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- FUNCIÓN CORREGIDA ---
     function renderEditTabs(projects) {
         tabsNavContainer.innerHTML = '';
         tabsContentContainer.innerHTML = '';
-        if (window.tinymce) tinymce.remove('.tab-content .descripcion');
 
         projects.forEach((p, i) => {
+            // Crear botón de la pestaña
             const tabButton = document.createElement('button');
             tabButton.textContent = p.titulo;
             tabButton.dataset.target = `tab-${i}`;
+            
             tabButton.addEventListener('click', () => {
+                // Gestionar clases activas para los botones
                 tabsNavContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                tabsContentContainer.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
                 tabButton.classList.add('active');
-                document.getElementById(`tab-${i}`).classList.add('active');
+
+                // Ocultar todos los contenidos de las pestañas
+                tabsContentContainer.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Mostrar el contenido de la pestaña seleccionada
+                const targetContent = document.getElementById(`tab-${i}`);
+                targetContent.classList.add('active');
+
+                // --- LÓGICA MEJORADA ---
+                // Inicializar TinyMCE solo si no ha sido inicializado antes en esta pestaña
+                const textarea = targetContent.querySelector('textarea');
+                if (textarea && !textarea.dataset.initialized) {
+                    const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
+                    tinymce.init({ ...currentThemeConfig, selector: `#${textarea.id}` });
+                    textarea.dataset.initialized = 'true';
+                }
             });
             tabsNavContainer.appendChild(tabButton);
 
+            // Crear contenido de la pestaña
             const tabContent = document.createElement('div');
             tabContent.id = `tab-${i}`;
-            tabContent.className = 'tab-content';
+            tabContent.className = 'tab-content'; // Se oculta/muestra con la clase 'active'
             tabContent.appendChild(createProjectFormElement(p, i));
             tabsContentContainer.appendChild(tabContent);
         });
 
+        // Activar la primera pestaña por defecto
         if (tabsNavContainer.firstChild) {
             tabsNavContainer.firstChild.click();
         }
-        
-        const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
-        tinymce.init({ ...currentThemeConfig, selector: '.tab-content .descripcion' });
     }
 
     function renderCreateForm() {
         const container = document.getElementById('create-project-form');
         container.innerHTML = '';
-        if (window.tinymce) tinymce.remove('#create-project-form .descripcion');
         const blankProject = { titulo: "", descripcion: "", imagenUrl: "", enlaceUrl: "", categoria: "Personal" };
         container.appendChild(createProjectFormElement(blankProject, 'new'));
         
@@ -196,10 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function createProjectFormElement(project, index) {
         const div = document.createElement('div');
         div.className = 'editor-proyecto-item';
-        div.dataset.id = index;
         div.innerHTML = `
             <div><label>Título</label><input type="text" class="titulo" value="${project.titulo}"></div>
-            <div><label>Descripción</label><textarea class="descripcion">${project.descripcion}</textarea></div>
+            <div><label>Descripción</label><textarea id="editor-${index}" class="descripcion">${project.descripcion}</textarea></div>
             <div><label>URL de la Imagen</label><input type="text" class="imagenUrl" value="${project.imagenUrl}"></div>
             <div><label>URL del Proyecto</label><input type="text" class="enlaceUrl" value="${project.enlaceUrl}"></div>
             <div><label>Categoría</label><select class="categoria"><option value="Facultad" ${project.categoria === 'Facultad' ? 'selected' : ''}>Facultad</option><option value="Personal" ${project.categoria === 'Personal' ? 'selected' : ''}>Personal</option></select></div>
@@ -210,8 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (confirm('¿Estás seguro? Los cambios se aplicarán al presionar "Guardar Todos los Cambios".')) {
                     const tabButtonToRemove = tabsNavContainer.querySelector(`[data-target="tab-${index}"]`);
                     if (tabButtonToRemove) tabButtonToRemove.remove();
-                    e.target.closest('.tab-content').remove();
-                     // Opcional: activar la primera pestaña si existe
+                    e.target.closest('.editor-proyecto-item').parentElement.remove();
                     if(tabsNavContainer.firstChild) tabsNavContainer.firstChild.click();
                 }
             });
@@ -276,9 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const projectsToSave = [newProject, ...allProjects];
         if (await saveChanges(projectsToSave, document.getElementById('create-status'))) {
-            await loadProjects(); // Recargar la lista de edición con el nuevo proyecto
-            showView('edit'); // Cambiar a la vista de edición
-            // Hacer clic en la nueva pestaña creada (que ahora será la primera)
+            await loadProjects();
+            showView('edit');
             setTimeout(() => {
                 if(tabsNavContainer.firstChild) tabsNavContainer.firstChild.click();
             }, 100);
