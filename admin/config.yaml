@@ -1,21 +1,22 @@
-# admin/config.yml
-
+# Backend: Configuración para conectar con tu repositorio de GitHub
 backend:
   name: github
-  repo: cepoide/cepoide.github.io # ¡Tu usuario y repositorio!
-  branch: main # O la rama que uses, ej: master
+  repo: cepoide/cepoide.github.io  # Revisa que sea tu usuario y nombre de repo correctos
+  branch: main                    # O 'master' si tu rama principal tiene ese nombre
 
-media_folder: "img" # Carpeta donde guardarás las imágenes de los proyectos
-public_folder: "/img" # Ruta pública para acceder a esas imágenes
+# Media: Configuración para las imágenes que subas desde el panel
+media_folder: "img"               # Las imágenes se guardarán en la carpeta "img"
+public_folder: "/img"             # Cómo se accederá a las imágenes desde el sitio
 
+# Collections: Define el contenido que se puede editar
 collections:
-  - name: "proyectos" # Nombre de la colección (interno)
-    label: "Proyectos" # Etiqueta que verás en el panel
-    folder: "" # Deja esto en blanco para guardar en la raíz
-    file: "proyectos.json" # El archivo que vamos a editar
-    create: true # Permite crear nuevos proyectos
-    slug: "{{fields.titulo}}" # Esto no se usará pero es requerido
-    fields: # Aquí definimos los campos de cada proyecto
+  - name: "proyectos"             # Un nombre interno para esta colección de contenido
+    label: "Proyectos"              # El nombre que verás en el panel de administración
+    label_singular: "Proyecto"      # El nombre para un solo elemento (ej: "Añadir nuevo Proyecto")
+    file: "proyectos.json"          # Le indicamos que todos los datos se guardan en este único archivo
+    widget: "list"                  # ¡Importante! Le decimos que el archivo es una LISTA de elementos
+    add_to_top: true                # Los nuevos proyectos aparecerán al principio de la lista
+    fields:                         # Aquí se definen los campos para CADA proyecto en la lista
       - {label: "Título", name: "titulo", widget: "string"}
       - {label: "Descripción", name: "descripcion", widget: "markdown"}
       - {label: "URL de la Imagen", name: "imagenUrl", widget: "image"}
