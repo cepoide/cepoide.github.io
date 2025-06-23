@@ -1,11 +1,11 @@
-# === VERSIÓN FINAL CON CODIFICACIÓN CORRECTA ===
+# === VERSION A PRUEBA DE ERRORES DE CODIFICACION ===
 
 backend:
   name: github
   repo: cepoide/cepoide.github.io
   branch: main
   auth_type: implicit
-  app_id: Ov23liw9dOe4vGZ3Ueqy # Asegúrate de que este es tu Client ID
+  app_id: Ov23liw9dOe4vGZ3Ueqy # Asegurate de que este es tu Client ID
 
 media_folder: "img"
 public_folder: "/img"
@@ -19,9 +19,9 @@ collections:
         file: "proyectos.json"
         create: true
         fields:
-          - {label: "Título", name: "titulo", widget: "string"}
-          - {label: "Descripción", name: "descripcion", widget: "markdown"}
+          - {label: "Titulo", name: "titulo", widget: "string"}
+          - {label: "Descripcion", name: "descripcion", widget: "markdown"}
           - {label: "URL de la Imagen", name: "imagenUrl", widget: "image"}
           - {label: "Texto Alternativo (Alt)", name: "altImagen", widget: "string", optional: true}
           - {label: "URL del Proyecto", name: "enlaceUrl", widget: "string"}
-          - {label: "Categoría", name: "categoria", widget: "select", options: ["Facultad", "Personal"]}
+          - {label: "Categoria", name: "categoria", widget: "select", options: ["Facultad", "Personal"]}
