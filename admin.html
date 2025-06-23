@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css" />
     
     <script src="https://cdn.jsdelivr.net/npm/octokit@3.2.0/dist-web/octokit-web.min.js" defer></script>
-    <script src="https://cdn.tiny.cloud/1/z02wm9cmyhv75ejxmfjm37ow5v4zkhtzelndpv8cdldnc56s/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/z02wm9cmyhv75ejxmfjm37ow5v4zkhtzelndpv8cdldnc56s/tinymce/7/tinymce.min.js" referrerpolicy="origin" defer></script>
     
     <script src="admin.js" defer></script>
     
@@ -29,3 +29,26 @@
         <div id="login-view" class="view">
             <h1>Configurar Token de Acceso</h1>
             <p>Para usar el panel, necesitas un Token de Acceso Personal de GitHub.</p>
+             <ol style="text-align: left; margin: 20px auto; max-width: 500px;">
+                <li>Ve a <a href="https://github.com/settings/tokens/new" target="_blank">GitHub para generar un nuevo token</a> (clásico).</li>
+                <li>Dale un nombre (ej: "Admin Panel Sitio").</li>
+                <li>Selecciona una expiración (ej: 30 días).</li>
+                <li>Marca la casilla de permisos <strong>`repo`</strong>.</li>
+                <li>Copia el token y pégalo abajo.</li>
+            </ol>
+            <textarea id="token-input" placeholder="Pega tu token aquí..."></textarea>
+            <button id="save-token-button">Guardar Token y Entrar</button>
+            <p id="login-status"></p>
+        </div>
+
+        <div id="editor-view" class="view">
+            <h1>Editor de Proyectos</h1>
+            <div id="proyectos-editor-list"></div>
+            <hr>
+            <button id="add-project-button">Añadir Nuevo Proyecto</button>
+            <button id="save-button" style="background-color: #28a745;">Guardar Todos los Cambios</button>
+            <p id="status"></p>
+        </div>
+    </main>
+</body>
+</html>
