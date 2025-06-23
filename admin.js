@@ -23,55 +23,43 @@ let fileSha;
 
 // === INICIALIZACIÓN Y AUTENTICACIÓN ===
 document.addEventListener('DOMContentLoaded', async () => {
-    // Intentar obtener el token de la redirección de OAuth
-    const token = await getTokenFromCallback();
-    if (token) {
-        localStorage.setItem('github_token', token);
-        // Limpiar la URL después de obtener el token
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    // Usar el token guardado si existe
-    const savedToken = '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'
+    // Para simplificar la prueba, usaremos un token hardcodeado.
+    // Reemplaza 'TU_TOKEN_AQUI' con tu Token de Acceso Personal de GitHub.
+    const savedToken = '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'; 
+    // ADVERTENCIA: No subas este token a un repositorio público.
+
     if (savedToken) {
-        setupAuthenticated(savedToken);
+        // Si tenemos un token, nos saltamos el login y vamos directo al editor.
+        loginButton.disabled = true;
+        loginButton.textContent = 'Autenticando...';
+        await setupAuthenticated(savedToken);
+    } else {
+        // Si no hay token, el botón de login estará activo.
+        loginButton.addEventListener('click', () => {
+            // CONSTRUIMOS LA URL DE AUTORIZACIÓN COMPLETA
+            // Esta es la línea que he corregido
+            const redirectUri = window.location.origin + window.location.pathname;
+            const authUrl = `https://github.com/login/oauth/authorize?client_id=${OAUTH_CONFIG.clientId}&scope=repo&redirect_uri=${encodeURIComponent(redirectUri)}`;
+            window.location.href = authUrl;
+        });
     }
 });
-
-loginButton.addEventListener('click', () => {
-    // Redirigir al usuario a GitHub para la autorización
-    const authUrl = `https://github.com/login/oauth/authorize?client_id=${OAUTH_CONFIG.clientId}&scope=repo`;
-    window.location.href = authUrl;
-});
-
-// Función para intercambiar el código por un token (requiere un pequeño proxy)
-// Como esto no es posible de forma segura en el cliente, nos basaremos en un flujo simplificado
-// Para este ejemplo, usaremos un flujo que dependa de una configuración OAuth de tipo "web"
-// que devuelve el token en el hash o requiere un paso intermedio.
-// El código de Octokit.js simplifica esto enormemente si la app está bien configurada.
-// Por ahora, asumiremos que un token es obtenido y guardado.
-
-// Esta es una simplificación. Un flujo completo y seguro requiere un backend
-// o un servicio de proxy para intercambiar el código por un token.
-// Sin embargo, para una app de GitHub Pages, podemos usar el token directamente
-// si la app OAuth está configurada para un flujo de cliente.
-// El siguiente código asume que el token se obtiene y almacena.
-
-async function getTokenFromCallback() {
-    // Esto es una simplificación y no funcionará out-of-the-box
-    // para intercambiar un `code`. Se necesita un backend o un proxy.
-    // La forma más fácil con Octokit es usar un token personal o un flujo de app.
-    // Para no complicar, vamos a usar un token personal de momento para probar.
-    // Reemplaza esto con un flujo de autenticación real si es necesario.
-    return null; // Dejamos esto como placeholder por ahora
-}
-
 
 async function setupAuthenticated(token) {
-    octokit = new octokit.Octokit({ auth: token });
-    loginContainer.style.display = 'none';
-    editorContainer.style.display = 'block';
-    await loadProjects();
+    try {
+        octokit = new octokit.Octokit({ auth: token });
+        // Verificamos que el token es válido haciendo una petición simple
+        await octokit.request('GET /user'); 
+        loginContainer.style.display = 'none';
+        editorContainer.style.display = 'block';
+        await loadProjects();
+    } catch(error) {
+        console.error("El token no es válido o ha expirado:", error);
+        statusElem.textContent = "El token no es válido. Genera uno nuevo.";
+        localStorage.removeItem('github_token'); // Limpiamos un token inválido
+        loginButton.disabled = false;
+        loginButton.textContent = 'Iniciar Sesión con GitHub';
+    }
 }
 
 // === CARGA Y RENDERIZADO DE PROYECTOS ===
@@ -93,14 +81,20 @@ async function loadProjects() {
 
 function renderUI(projects) {
     projectListContainer.innerHTML = '';
+    // Destruir instancias de TinyMCE viejas si existen
+    if (tinymce.editors.length > 0) {
+        tinymce.remove();
+    }
+
     projects.forEach((project, index) => {
         const projectDiv = document.createElement('div');
         projectDiv.className = 'editor-proyecto-item';
         projectDiv.dataset.index = index;
+        // Usamos IDs únicos para cada textarea
         projectDiv.innerHTML = `
             <h3>Proyecto: <span class="project-title">${project.titulo}</span></h3>
             <div><label>Título</label><input type="text" class="titulo" value="${project.titulo}"></div>
-            <div><label>Descripción</label><textarea class="descripcion">${project.descripcion}</textarea></div>
+            <div><label>Descripción</label><textarea id="editor-${index}" class="descripcion">${project.descripcion}</textarea></div>
             <div><label>URL de la Imagen</label><input type="text" class="imagenUrl" value="${project.imagenUrl}"></div>
             <div><label>URL del Proyecto</label><input type="text" class="enlaceUrl" value="${project.enlaceUrl}"></div>
             <div>
@@ -138,8 +132,8 @@ saveButton.addEventListener('click', async () => {
         const updatedProjects = [];
 
         for (const el of projectElements) {
-            const index = el.dataset.index;
             const titulo = el.querySelector('.titulo').value;
+            // Obtenemos el contenido del editor TinyMCE por su ID
             const descripcion = tinymce.get(el.querySelector('.descripcion').id).getContent();
             
             updatedProjects.push({
@@ -154,16 +148,17 @@ saveButton.addEventListener('click', async () => {
 
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(updatedProjects, null, 2))));
 
-        await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+        const { data } = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
             ...GITHUB_CONFIG,
             message: `[Admin Panel] Actualización de proyectos ${new Date().toISOString()}`,
             content: content,
             sha: fileSha
         });
+        
+        // Actualizamos el SHA para el próximo guardado
+        fileSha = data.content.sha;
 
         statusElem.textContent = '¡Guardado con éxito!';
-        // Recargar para obtener el nuevo SHA
-        setTimeout(loadProjects, 1000);
 
     } catch (error) {
         console.error('Error al guardar:', error);
@@ -172,15 +167,6 @@ saveButton.addEventListener('click', async () => {
 });
 
 addButton.addEventListener('click', () => {
-    const newIndex = document.querySelectorAll('.editor-proyecto-item').length;
-    const newProject = {
-        titulo: "Nuevo Proyecto",
-        descripcion: "<p>Añade una descripción.</p>",
-        imagenUrl: "img/placeholder.png",
-        enlaceUrl: "#",
-        categoria: "Personal"
-    };
-    // Esta función necesita ser ajustada para renderizar un solo item nuevo
-    // Por simplicidad, por ahora pedimos al usuario guardar y recargar.
-    alert("Funcionalidad para añadir en el sitio no implementada aún. Por ahora, edita los existentes o añade uno directamente en el JSON.");
+    // Esta funcionalidad es más compleja de lo que parece
+    alert("Funcionalidad para añadir nuevos proyectos no implementada en esta versión. Puedes editar y eliminar los existentes.");
 });
