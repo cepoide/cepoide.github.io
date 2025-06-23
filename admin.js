@@ -5,9 +5,6 @@ const GITHUB_CONFIG = {
     path: 'proyectos.json',
     branch: 'main'
 };
-const OAUTH_CONFIG = {
-    clientId: 'Ov23liw9dOe4vGZ3Ueqy' // Tu Client ID
-};
 
 // === ELEMENTOS DEL DOM ===
 const loginContainer = document.getElementById('login-container');
@@ -23,25 +20,18 @@ let fileSha;
 
 // === INICIALIZACIÓN Y AUTENTICACIÓN ===
 document.addEventListener('DOMContentLoaded', async () => {
-    // Para simplificar la prueba, usaremos un token hardcodeado.
-    // Reemplaza 'TU_TOKEN_AQUI' con tu Token de Acceso Personal de GitHub.
-    const savedToken = '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'; 
-    // ADVERTENCIA: No subas este token a un repositorio público.
+    const savedToken = localStorage.getItem('github_token');
 
     if (savedToken) {
-        // Si tenemos un token, nos saltamos el login y vamos directo al editor.
-        loginButton.disabled = true;
-        loginButton.textContent = 'Autenticando...';
+        // Si tenemos un token, intentamos autenticarnos
         await setupAuthenticated(savedToken);
     } else {
-        // Si no hay token, el botón de login estará activo.
-        loginButton.addEventListener('click', () => {
-            // CONSTRUIMOS LA URL DE AUTORIZACIÓN COMPLETA
-            // Esta es la línea que he corregido
-            const redirectUri = window.location.origin + window.location.pathname;
-            const authUrl = `https://github.com/login/oauth/authorize?client_id=${OAUTH_CONFIG.clientId}&scope=repo&redirect_uri=${encodeURIComponent(redirectUri)}`;
-            window.location.href = authUrl;
-        });
+        // Si no hay token, mostramos el mensaje de login
+        loginContainer.innerHTML = `
+            <h1>Panel de Administración</h1>
+            <p>No se encontró un token de acceso guardado.</p>
+            <button onclick="window.location.href='login.html'">Ir a la página de Login</button>
+        `;
     }
 });
 
@@ -50,17 +40,25 @@ async function setupAuthenticated(token) {
         octokit = new octokit.Octokit({ auth: token });
         // Verificamos que el token es válido haciendo una petición simple
         await octokit.request('GET /user'); 
+        
         loginContainer.style.display = 'none';
         editorContainer.style.display = 'block';
         await loadProjects();
     } catch(error) {
         console.error("El token no es válido o ha expirado:", error);
-        statusElem.textContent = "El token no es válido. Genera uno nuevo.";
-        localStorage.removeItem('github_token'); // Limpiamos un token inválido
-        loginButton.disabled = false;
-        loginButton.textContent = 'Iniciar Sesión con GitHub';
+        // Si el token es inválido, mostramos el mensaje de error y el botón de login
+        loginContainer.innerHTML = `
+            <h1>Panel de Administración</h1>
+            <p style="color: red;">Tu token de acceso no es válido o ha expirado.</p>
+            <p>Por favor, genera uno nuevo y configúralo en la página de login.</p>
+            <button onclick="window.location.href='login.html'">Ir a la página de Login</button>
+        `;
+        loginContainer.style.display = 'block';
+        editorContainer.style.display = 'none';
+        localStorage.removeItem('github_token'); // Limpiamos el token inválido
     }
 }
+
 
 // === CARGA Y RENDERIZADO DE PROYECTOS ===
 async function loadProjects() {
@@ -81,7 +79,6 @@ async function loadProjects() {
 
 function renderUI(projects) {
     projectListContainer.innerHTML = '';
-    // Destruir instancias de TinyMCE viejas si existen
     if (tinymce.editors.length > 0) {
         tinymce.remove();
     }
@@ -89,10 +86,8 @@ function renderUI(projects) {
     projects.forEach((project, index) => {
         const projectDiv = document.createElement('div');
         projectDiv.className = 'editor-proyecto-item';
-        projectDiv.dataset.index = index;
-        // Usamos IDs únicos para cada textarea
         projectDiv.innerHTML = `
-            <h3>Proyecto: <span class="project-title">${project.titulo}</span></h3>
+            <h3>${project.titulo}</h3>
             <div><label>Título</label><input type="text" class="titulo" value="${project.titulo}"></div>
             <div><label>Descripción</label><textarea id="editor-${index}" class="descripcion">${project.descripcion}</textarea></div>
             <div><label>URL de la Imagen</label><input type="text" class="imagenUrl" value="${project.imagenUrl}"></div>
@@ -104,7 +99,7 @@ function renderUI(projects) {
                     <option value="Personal" ${project.categoria === 'Personal' ? 'selected' : ''}>Personal</option>
                 </select>
             </div>
-            <button class="delete-button">Eliminar Proyecto</button>
+            <button class="delete-button" data-index="${index}">Eliminar Proyecto</button>
         `;
         projectListContainer.appendChild(projectDiv);
     });
@@ -129,11 +124,10 @@ saveButton.addEventListener('click', async () => {
     try {
         statusElem.textContent = 'Guardando...';
         const projectElements = document.querySelectorAll('.editor-proyecto-item');
-        const updatedProjects = [];
+        let updatedProjects = [];
 
         for (const el of projectElements) {
             const titulo = el.querySelector('.titulo').value;
-            // Obtenemos el contenido del editor TinyMCE por su ID
             const descripcion = tinymce.get(el.querySelector('.descripcion').id).getContent();
             
             updatedProjects.push({
@@ -155,9 +149,7 @@ saveButton.addEventListener('click', async () => {
             sha: fileSha
         });
         
-        // Actualizamos el SHA para el próximo guardado
         fileSha = data.content.sha;
-
         statusElem.textContent = '¡Guardado con éxito!';
 
     } catch (error) {
@@ -166,7 +158,48 @@ saveButton.addEventListener('click', async () => {
     }
 });
 
+// === AÑADIR NUEVO PROYECTO ===
 addButton.addEventListener('click', () => {
-    // Esta funcionalidad es más compleja de lo que parece
-    alert("Funcionalidad para añadir nuevos proyectos no implementada en esta versión. Puedes editar y eliminar los existentes.");
+    const newIndex = document.querySelectorAll('.editor-proyecto-item').length;
+
+    // Crea un nuevo objeto de proyecto
+    const newProject = {
+        titulo: "Nuevo Proyecto",
+        descripcion: "<p>Añade una descripción aquí.</p>",
+        imagenUrl: "img/placeholder.png",
+        enlaceUrl: "#",
+        categoria: "Personal"
+    };
+    
+    // Renderiza el nuevo proyecto en la UI y lo añade a la lista
+    const projectDiv = document.createElement('div');
+    projectDiv.className = 'editor-proyecto-item';
+    projectDiv.innerHTML = `
+        <h3>${newProject.titulo}</h3>
+        <div><label>Título</label><input type="text" class="titulo" value="${newProject.titulo}"></div>
+        <div><label>Descripción</label><textarea id="editor-${newIndex}" class="descripcion">${newProject.descripcion}</textarea></div>
+        <div><label>URL de la Imagen</label><input type="text" class="imagenUrl" value="${newProject.imagenUrl}"></div>
+        <div><label>URL del Proyecto</label><input type="text" class="enlaceUrl" value="${newProject.enlaceUrl}"></div>
+        <div>
+            <label>Categoría</label>
+            <select class="categoria">
+                <option value="Facultad">Facultad</option>
+                <option value="Personal" selected>Personal</option>
+            </select>
+        </div>
+        <button class="delete-button" data-index="${newIndex}">Eliminar Proyecto</button>
+    `;
+    projectListContainer.appendChild(projectDiv);
+
+    // Inicializa TinyMCE en el nuevo textarea
+    tinymce.init({
+        selector: `#editor-${newIndex}`
+    });
+    
+    // Añade el event listener al nuevo botón de eliminar
+    projectDiv.querySelector('.delete-button').addEventListener('click', (e) => {
+        if (confirm('¿Estás seguro de que quieres eliminar este proyecto?')) {
+            e.target.closest('.editor-proyecto-item').remove();
+        }
+    });
 });
