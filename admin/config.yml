@@ -2,20 +2,24 @@
 
 backend:
   name: github
-  repo: cepoide/cepoide.github.io # ¡Tu usuario y repositorio!
-  branch: main # O la rama que uses, ej: master
+  repo: cepoide/cepoide.github.io  # Tu usuario y repositorio
+  branch: main                    # O 'master' si usas esa como rama principal
+  
+  # --- LÍNEAS NUEVAS Y CRUCIALES ---
+  auth_type: implicit             # Le decimos que use el método de autenticación del navegador
+  app_id: TU_CLIENT_ID_DE_GITHUB  # Le decimos que use TU aplicación de GitHub
 
-media_folder: "img" # Carpeta donde guardarás las imágenes de los proyectos
-public_folder: "/img" # Ruta pública para acceder a esas imágenes
+media_folder: "img"
+public_folder: "/img"
 
 collections:
-  - name: "proyectos" # Nombre de la colección (interno)
-    label: "Proyectos" # Etiqueta que verás en el panel
-    folder: "" # Deja esto en blanco para guardar en la raíz
-    file: "proyectos.json" # El archivo que vamos a editar
-    create: true # Permite crear nuevos proyectos
-    slug: "{{fields.titulo}}" # Esto no se usará pero es requerido
-    fields: # Aquí definimos los campos de cada proyecto
+  - name: "proyectos"
+    label: "Proyectos"
+    label_singular: "Proyecto"
+    file: "proyectos.json"
+    widget: "list"
+    add_to_top: true
+    fields:
       - {label: "Título", name: "titulo", widget: "string"}
       - {label: "Descripción", name: "descripcion", widget: "markdown"}
       - {label: "URL de la Imagen", name: "imagenUrl", widget: "image"}
