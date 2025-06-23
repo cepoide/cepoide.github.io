@@ -13,6 +13,32 @@ main.admin-main {
     text-align: center; 
 }
 
+/* Estilos para la imagen de login */
+.login-image {
+    display: block;
+    margin: 25px auto;
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* NUEVO: Estilos para el textarea del token */
+#login-view textarea {
+    width: 100%;
+    max-width: 500px;
+    min-height: 100px;
+    margin: 20px 0;
+    padding: 10px;
+    font-family: monospace;
+}
+
+/* NUEVO: Estilos para el contenedor del botón de login */
+#login-view div {
+    text-align: center;
+}
+
+
 /* Barra de Navegación del Admin */
 .admin-nav {
     display: flex;
@@ -81,11 +107,11 @@ main.admin-main {
 }
 
 .tab-content {
-    display: none; /* Oculta el contenido de las pestañas por defecto */
+    display: none; 
 }
 
 .tab-content.active {
-    display: block; /* Muestra solo la pestaña activa */
+    display: block; 
 }
 
 /* Diseño Minimalista de Botones */
@@ -177,4 +203,10 @@ body.oscuro .btn-delete:hover { background-color: #f85149; color: #fff; }
 body.oscuro .editor-proyecto-item { background-color: #4a4a4a; border-color: #5a5a5a; }
 body.oscuro .editor-proyecto-item input, body.oscuro .editor-proyecto-item select, body.oscuro .tox .tox-edit-area__iframe {
     background-color: #555 !important; color: #fff !important; border-color: #666 !important;
+}
+
+body.oscuro #login-view textarea {
+    background-color: #555;
+    color: #fff;
+    border-color: #666;
 }
