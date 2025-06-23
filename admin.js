@@ -1,7 +1,7 @@
 // admin.js
 
 // --- CONFIGURACIÓN ---
-const GITHUB_CLIENT_ID = 'TOv23liw9dOe4vGZ3Ueqy'; // ¡Pega tu Client ID aquí!
+const GITHUB_CLIENT_ID = 'Ov23liw9dOe4vGZ3Ueqy'; // ¡Pega tu Client ID aquí!
 const GITHUB_REPO = 'cepoide/cepoide.github.io'; // ej: 'cepoide/portfolio'
 const CONTENT_FILE_PATH = 'proyectos.json';
 
