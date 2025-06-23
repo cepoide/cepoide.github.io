@@ -19,9 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const createView = document.getElementById('create-view');
     const projectsTableContainer = document.getElementById('projects-table-container');
     const singleProjectEditorContainer = document.getElementById('single-project-editor-container');
-
-    // --- LÓGICA DE TEMA --- (Sin cambios)
+    const navEdit = document.getElementById('nav-edit');
+    const navCreate = document.getElementById('nav-create');
     const themeToggleButton = document.getElementById('admin-theme-toggle');
+    
+    // --- LÓGICA DE TEMA ---
     function applyTheme(theme) {
         const isDark = theme === 'oscuro';
         document.body.classList.toggle('oscuro', isDark);
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         applyTheme(newTheme);
     });
 
-    // --- LÓGICA DE APP Y AUTENTICACIÓN --- (Sin cambios)
+    // --- LÓGICA DE APP Y AUTENTICACIÓN ---
     function initApp() {
         applyTheme(localStorage.getItem('admin_theme') || 'claro');
         const savedToken = localStorage.getItem('github_token');
@@ -67,9 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) { console.error("Fallo de autenticación:", error); localStorage.removeItem('github_token'); loginView.style.display = 'block'; }
     }
     
-    // --- LÓGICA DE NAVEGACIÓN Y VISTAS --- (Sin cambios)
-    const navEdit = document.getElementById('nav-edit');
-    const navCreate = document.getElementById('nav-create');
+    // --- LÓGICA DE NAVEGACIÓN Y VISTAS ---
     function setupNavigation() {
         navEdit.addEventListener('click', (e) => { e.preventDefault(); showView('edit'); });
         navCreate.addEventListener('click', (e) => { e.preventDefault(); showView('create'); });
@@ -87,7 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NUEVA LÓGICA DE EDICIÓN CON TABLA ---
+    // --- FUNCIÓN QUE FALTABA ---
+    async function apiRequest(method, url, body = null) {
+        const headers = { 'Authorization': `Bearer ${githubToken}`, 'Accept': 'application/vnd.github.v3+json' };
+        const options = { method, headers };
+        if (body) options.body = JSON.stringify(body);
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `Error de API: ${response.status}`);
+        }
+        return response.status === 204 ? null : response.json();
+    }
+
+    // --- LÓGICA DE MANEJO DE PROYECTOS (TABLA) ---
 
     function showProjectsList() {
         projectsTableContainer.style.display = 'block';
@@ -102,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const formContainer = document.getElementById('single-project-form');
         formContainer.innerHTML = '';
+        if (window.tinymce) tinymce.remove(`#editor-${projectIndex}`); // Remove specific instance
         formContainer.appendChild(createProjectFormElement(project, projectIndex));
         
         const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
@@ -127,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
             `;
         });
-        // Añadir listeners a los nuevos botones
         tableBody.querySelectorAll('.btn-edit').forEach(btn => {
             btn.addEventListener('click', () => showEditForm(btn.dataset.index));
         });
@@ -137,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (confirm(`¿Estás seguro de que quieres eliminar "${allProjects[indexToDelete].titulo}"? Esta acción es permanente.`)) {
                     allProjects.splice(indexToDelete, 1);
                     if (await saveChanges(allProjects, document.getElementById('status'))) {
-                        renderProjectsTable(allProjects); // Re-renderizar la tabla
+                        renderProjectsTable(allProjects);
                     }
                 }
             });
@@ -149,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const titulo = form.querySelector('.titulo').value;
         const updatedProject = {
             titulo,
-            descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
+            descripcion: tinymce.get(`editor-${currentEditIndex}`).getContent(),
             imagenUrl: form.querySelector('.imagenUrl').value,
             altImagen: `Captura de pantalla del proyecto ${titulo}`,
             enlaceUrl: form.querySelector('.enlaceUrl').value,
@@ -163,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // --- LÓGICA DE CREACIÓN --- (Sin cambios significativos)
     function renderCreateForm() {
         const container = document.getElementById('create-project-form');
         container.innerHTML = '';
@@ -180,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!titulo) { alert("El título no puede estar vacío."); return; }
         const newProject = {
             titulo,
-            descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
+            descripcion: tinymce.get('editor-new').getContent(),
             imagenUrl: form.querySelector('.imagenUrl').value,
             altImagen: `Captura de pantalla del proyecto ${titulo}`,
             enlaceUrl: form.querySelector('.enlaceUrl').value,
@@ -188,12 +200,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const projectsToSave = [newProject, ...allProjects];
         if (await saveChanges(projectsToSave, document.getElementById('create-status'))) {
-            await loadProjects(); // Recargar la lista de edición con el nuevo proyecto
-            showView('edit'); // Cambiar a la vista de edición
+            await loadProjects();
+            showView('edit');
         }
     });
 
-    // --- FUNCIONES COMUNES Y DE INICIO ---
     async function loadProjects() {
         try {
             const url = `${API_URL}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}&t=${new Date().getTime()}`;
