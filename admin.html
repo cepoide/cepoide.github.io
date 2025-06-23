@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Panel de Administración</title>
+    <title>Login - Panel de Administración (Modo Depuración)</title>
     <link rel="stylesheet" href="style.css" />
     <style>
         main { max-width: 600px; margin: 40px auto; padding: 40px; text-align: center; }
@@ -14,30 +14,36 @@
 <body>
     <main>
         <h1>Configurar Token de Acceso</h1>
-        <p>Para usar el panel, necesitas un Token de Acceso Personal de GitHub.</p>
-        <ol style="text-align: left; margin: 20px 0;">
-            <li>Ve a <a href="https://github.com/settings/tokens/new" target="_blank">GitHub para generar un nuevo token</a> (clásico).</li>
-            <li>Dale una nota (ej: "Admin Panel Sitio").</li>
-            <li>Selecciona una fecha de expiración.</li>
-            <li>Marca la casilla de permisos <strong>`repo`</strong>.</li>
-            <li>Copia el token generado (empieza con `ghp_...`).</li>
-            <li>Pégalo en el campo de abajo y guárdalo.</li>
-        </ol>
+        <p>Pega tu Token de Acceso Personal de GitHub y haz clic en guardar.</p>
         <textarea id="token-input" placeholder="Pega tu token aquí..."></textarea>
         <button id="save-token-button">Guardar Token y Entrar</button>
         <p id="status" style="color: green;"></p>
     </main>
     <script>
         document.getElementById('save-token-button').addEventListener('click', () => {
-            const token = document.getElementById('token-input').value;
-            if (token && token.startsWith('ghp_')) {
+            // Alerta 1: Para confirmar que el botón funciona.
+            alert("Botón presionado. Verificando el token...");
+
+            const tokenInput = document.getElementById('token-input');
+            const token = tokenInput.value.trim();
+
+            // Alerta 2: Nos mostrará el token exacto que leyó el script.
+            alert("El token que leí es: '" + token + "'");
+
+            // Condición de validación
+            if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
+                // Alerta 3: Si la validación es exitosa, veremos este mensaje.
+                alert("El formato del token es CORRECTO. Guardando y redirigiendo...");
+
                 localStorage.setItem('github_token', token);
                 document.getElementById('status').textContent = '¡Token guardado! Redirigiendo...';
                 setTimeout(() => {
                     window.location.href = 'admin.html';
                 }, 1000);
             } else {
-                alert('Por favor, pega un Token de Acceso Personal de GitHub válido.');
+                // Alerta 4: Si la validación falla, veremos este mensaje.
+                alert("El formato del token es INCORRECTO. Revisa la consola (F12) para más detalles y asegúrate de que el token pegado sea el correcto.");
+                console.log("El token ingresado no pasó la validación. Valor recibido:", token);
             }
         });
     </script>
