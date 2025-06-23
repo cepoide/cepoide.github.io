@@ -16,7 +16,7 @@
         <p>Para entrar tenes que decirme la contraseña</p>
         <textarea id="token-input" placeholder="La contraseña"></textarea>
         <div>
-            <button id="save-token-button" class="admin-button btn-create">Guardar contraseña y Entrar</button>
+            <button id="save-token-button" class="admin-button btn-create">Guardar contraseña y entrar</button>
         </div>
         <p id="login-status"></p>
     </main>
@@ -33,14 +33,32 @@
         </nav>
         <main class="admin-main">
             <div id="edit-view" class="admin-view">
-                <h2>Proyectos Existentes</h2>
-                <div id="project-accordion"></div> <button id="save-all-button" class="admin-button btn-save" style="margin-top: 20px;">Guardar Todos los Cambios</button>
-                <p id="status"></p>
+                <div id="projects-table-container">
+                    <h2>Proyectos Existentes</h2>
+                    <table class="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Categoría</th>
+                                <th class="actions-cell">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-table-body">
+                            </tbody>
+                    </table>
+                </div>
+                <div id="single-project-editor-container" style="display: none;">
+                    <h2 id="editor-heading">Editando Proyecto</h2>
+                    <div id="single-project-form"></div>
+                    <button id="save-single-button" class="admin-button btn-save">Guardar Cambios</button>
+                    <button id="cancel-edit-button" class="admin-button btn-cancel">Volver al Listado</button>
+                    <p id="status"></p>
+                </div>
             </div>
             <div id="create-view" class="admin-view">
                 <h2>Crear Nuevo Proyecto</h2>
                 <div id="create-project-form"></div>
-                <button id="save-new-button" class="admin-button btn-create" style="margin-top: 20px;">Guardar Nuevo Proyecto</button>
+                <button id="save-new-button" class="admin-button btn-create">Guardar Nuevo Proyecto</button>
                 <p id="create-status"></p>
             </div>
         </main>

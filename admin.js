@@ -3,26 +3,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CONFIGURACIÓN Y ELEMENTOS GLOBALES ---
     const GITHUB_CONFIG = { owner: 'cepoide', repo: 'cepoide.github.io', path: 'proyectos.json', branch: 'main' };
     const API_URL = 'https://api.github.com';
-    let githubToken, fileSha, allProjects = [];
+    let githubToken, fileSha, allProjects = [], currentEditIndex = -1;
 
     const TINYMCE_CONFIG = {
         plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
         toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media table | code fullscreen preview | help',
-        menubar: 'file edit view insert format tools table help',
-        skin: 'oxide', content_css: 'default'
+        menubar: 'file edit view insert format tools table help', skin: 'oxide', content_css: 'default'
     };
     const TINYMCE_CONFIG_DARK = { ...TINYMCE_CONFIG, skin: 'oxide-dark', content_css: 'dark' };
 
+    // Vistas y contenedores
     const loginView = document.getElementById('login-view');
     const panelContainer = document.getElementById('panel-container');
     const editView = document.getElementById('edit-view');
     const createView = document.getElementById('create-view');
-    const navEdit = document.getElementById('nav-edit');
-    const navCreate = document.getElementById('nav-create');
+    const projectsTableContainer = document.getElementById('projects-table-container');
+    const singleProjectEditorContainer = document.getElementById('single-project-editor-container');
+
+    // --- LÓGICA DE TEMA --- (Sin cambios)
     const themeToggleButton = document.getElementById('admin-theme-toggle');
-    const accordionContainer = document.getElementById('project-accordion');
-    
-    // --- LÓGICA DE TEMA ---
     function applyTheme(theme) {
         const isDark = theme === 'oscuro';
         document.body.classList.toggle('oscuro', isDark);
@@ -38,14 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
         applyTheme(newTheme);
     });
 
-    // --- LÓGICA DE APP Y AUTENTICACIÓN ---
+    // --- LÓGICA DE APP Y AUTENTICACIÓN --- (Sin cambios)
     function initApp() {
         applyTheme(localStorage.getItem('admin_theme') || 'claro');
         const savedToken = localStorage.getItem('github_token');
         if (savedToken) setupAuthenticated(savedToken);
         else loginView.style.display = 'block';
     }
-
     document.getElementById('save-token-button').addEventListener('click', () => {
         const token = document.getElementById('token-input').value.trim();
         if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Por favor, pega un Token de Acceso Personal de GitHub válido.');
         }
     });
-
     async function setupAuthenticated(token) {
         githubToken = token;
         try {
@@ -67,99 +64,106 @@ document.addEventListener('DOMContentLoaded', () => {
             setupNavigation();
             renderCreateForm(); 
             showView('create'); 
-        } catch (error) {
-            console.error("Fallo de autenticación:", error);
-            localStorage.removeItem('github_token');
-            loginView.style.display = 'block';
-        }
+        } catch (error) { console.error("Fallo de autenticación:", error); localStorage.removeItem('github_token'); loginView.style.display = 'block'; }
     }
     
-    // --- LÓGICA DE NAVEGACIÓN Y VISTAS ---
+    // --- LÓGICA DE NAVEGACIÓN Y VISTAS --- (Sin cambios)
+    const navEdit = document.getElementById('nav-edit');
+    const navCreate = document.getElementById('nav-create');
     function setupNavigation() {
         navEdit.addEventListener('click', (e) => { e.preventDefault(); showView('edit'); });
         navCreate.addEventListener('click', (e) => { e.preventDefault(); showView('create'); });
     }
-    
     function showView(viewName) {
         [editView, createView].forEach(v => v.style.display = 'none');
         [navEdit, navCreate].forEach(n => n.classList.remove('active'));
         if (viewName === 'edit') {
             editView.style.display = 'block';
             navEdit.classList.add('active');
+            showProjectsList();
         } else {
             createView.style.display = 'block';
             navCreate.classList.add('active');
         }
     }
 
-    // --- LÓGICA DE MANEJO DE PROYECTOS (ACORDEÓN) ---
-    async function apiRequest(method, url, body = null) {
-        const headers = { 'Authorization': `Bearer ${githubToken}`, 'Accept': 'application/vnd.github.v3+json' };
-        const options = { method, headers };
-        if (body) options.body = JSON.stringify(body);
-        const response = await fetch(url, options);
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `Error de API: ${response.status}`);
-        }
-        return response.status === 204 ? null : response.json();
+    // --- NUEVA LÓGICA DE EDICIÓN CON TABLA ---
+
+    function showProjectsList() {
+        projectsTableContainer.style.display = 'block';
+        singleProjectEditorContainer.style.display = 'none';
+        renderProjectsTable(allProjects);
     }
 
-    async function loadProjects() {
-        try {
-            const url = `${API_URL}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}&t=${new Date().getTime()}`;
-            const data = await apiRequest('GET', url);
-            fileSha = data.sha;
-            const decodedContent = decodeURIComponent(escape(atob(data.content)));
-            allProjects = JSON.parse(decodedContent);
-            renderAccordion(allProjects);
-        } catch (error) {
-            console.error('Error al cargar proyectos:', error);
-        }
-    }
-
-    function renderAccordion(projects) {
-        accordionContainer.innerHTML = '';
-        if (window.tinymce) tinymce.remove('.accordion-content .descripcion');
-        projects.forEach((p, i) => accordionContainer.appendChild(createAccordionItem(p, i)));
-    }
-
-    function createAccordionItem(project, index) {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'accordion-item';
-
-        const headerDiv = document.createElement('div');
-        headerDiv.className = 'accordion-header';
-        headerDiv.textContent = project.titulo;
+    function showEditForm(projectIndex) {
+        currentEditIndex = projectIndex;
+        const project = allProjects[projectIndex];
+        document.getElementById('editor-heading').textContent = `Editando: ${project.titulo}`;
         
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'accordion-content';
-        contentDiv.appendChild(createProjectFormElement(project, index));
+        const formContainer = document.getElementById('single-project-form');
+        formContainer.innerHTML = '';
+        formContainer.appendChild(createProjectFormElement(project, projectIndex));
+        
+        const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
+        tinymce.init({ ...currentThemeConfig, selector: `#editor-${projectIndex}` });
 
-        headerDiv.addEventListener('click', () => {
-            const isActive = headerDiv.classList.contains('active');
-            // Cerrar todos los demás
-            accordionContainer.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
-            accordionContainer.querySelectorAll('.accordion-content').forEach(c => c.style.display = 'none');
-            
-            if (!isActive) {
-                headerDiv.classList.add('active');
-                contentDiv.style.display = 'block';
-                // Inicializar TinyMCE solo si es la primera vez que se abre
-                const textarea = contentDiv.querySelector('textarea');
-                if (textarea && !textarea.dataset.initialized) {
-                    const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
-                    tinymce.init({ ...currentThemeConfig, selector: `#${textarea.id}` });
-                    textarea.dataset.initialized = 'true';
-                }
-            }
+        projectsTableContainer.style.display = 'none';
+        singleProjectEditorContainer.style.display = 'block';
+    }
+
+    document.getElementById('cancel-edit-button').addEventListener('click', showProjectsList);
+
+    function renderProjectsTable(projects) {
+        const tableBody = document.getElementById('projects-table-body');
+        tableBody.innerHTML = '';
+        projects.forEach((p, i) => {
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${p.titulo}</td>
+                <td>${p.categoria}</td>
+                <td class="actions-cell">
+                    <button class="admin-button btn-edit" data-index="${i}">Editar</button>
+                    <button class="admin-button btn-delete" data-index="${i}">Eliminar</button>
+                </td>
+            `;
         });
-
-        itemDiv.appendChild(headerDiv);
-        itemDiv.appendChild(contentDiv);
-        return itemDiv;
+        // Añadir listeners a los nuevos botones
+        tableBody.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', () => showEditForm(btn.dataset.index));
+        });
+        tableBody.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const indexToDelete = parseInt(btn.dataset.index, 10);
+                if (confirm(`¿Estás seguro de que quieres eliminar "${allProjects[indexToDelete].titulo}"? Esta acción es permanente.`)) {
+                    allProjects.splice(indexToDelete, 1);
+                    if (await saveChanges(allProjects, document.getElementById('status'))) {
+                        renderProjectsTable(allProjects); // Re-renderizar la tabla
+                    }
+                }
+            });
+        });
     }
     
+    document.getElementById('save-single-button').addEventListener('click', async () => {
+        const form = singleProjectEditorContainer.querySelector('.editor-proyecto-item');
+        const titulo = form.querySelector('.titulo').value;
+        const updatedProject = {
+            titulo,
+            descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
+            imagenUrl: form.querySelector('.imagenUrl').value,
+            altImagen: `Captura de pantalla del proyecto ${titulo}`,
+            enlaceUrl: form.querySelector('.enlaceUrl').value,
+            categoria: form.querySelector('.categoria').value
+        };
+        
+        allProjects[currentEditIndex] = updatedProject;
+        
+        if (await saveChanges(allProjects, document.getElementById('status'))) {
+            showProjectsList();
+        }
+    });
+    
+    // --- LÓGICA DE CREACIÓN --- (Sin cambios significativos)
     function renderCreateForm() {
         const container = document.getElementById('create-project-form');
         container.innerHTML = '';
@@ -168,6 +172,37 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(createProjectFormElement(blankProject, 'new'));
         const currentThemeConfig = document.body.classList.contains('oscuro') ? TINYMCE_CONFIG_DARK : TINYMCE_CONFIG;
         tinymce.init({ ...currentThemeConfig, selector: '#create-project-form .descripcion' });
+    }
+
+    document.getElementById('save-new-button').addEventListener('click', async () => {
+        const form = document.getElementById('create-project-form').querySelector('.editor-proyecto-item');
+        const titulo = form.querySelector('.titulo').value;
+        if (!titulo) { alert("El título no puede estar vacío."); return; }
+        const newProject = {
+            titulo,
+            descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
+            imagenUrl: form.querySelector('.imagenUrl').value,
+            altImagen: `Captura de pantalla del proyecto ${titulo}`,
+            enlaceUrl: form.querySelector('.enlaceUrl').value,
+            categoria: form.querySelector('.categoria').value
+        };
+        const projectsToSave = [newProject, ...allProjects];
+        if (await saveChanges(projectsToSave, document.getElementById('create-status'))) {
+            await loadProjects(); // Recargar la lista de edición con el nuevo proyecto
+            showView('edit'); // Cambiar a la vista de edición
+        }
+    });
+
+    // --- FUNCIONES COMUNES Y DE INICIO ---
+    async function loadProjects() {
+        try {
+            const url = `${API_URL}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}&t=${new Date().getTime()}`;
+            const data = await apiRequest('GET', url);
+            fileSha = data.sha;
+            const decodedContent = decodeURIComponent(escape(atob(data.content)));
+            allProjects = JSON.parse(decodedContent);
+            renderProjectsTable(allProjects);
+        } catch (error) { console.error('Error al cargar proyectos:', error); }
     }
 
     function createProjectFormElement(project, index) {
@@ -179,18 +214,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <div><label>URL de la Imagen</label><input type="text" class="imagenUrl" value="${project.imagenUrl}"></div>
             <div><label>URL del Proyecto</label><input type="text" class="enlaceUrl" value="${project.enlaceUrl}"></div>
             <div><label>Categoría</label><select class="categoria"><option value="Facultad" ${project.categoria === 'Facultad' ? 'selected' : ''}>Facultad</option><option value="Personal" ${project.categoria === 'Personal' ? 'selected' : ''}>Personal</option></select></div>
-            ${index !== 'new' ? '<button class="admin-button btn-delete">Eliminar Este Proyecto</button>' : ''}
         `;
-        if (index !== 'new') {
-            div.querySelector('.delete-button').addEventListener('click', e => {
-                if (confirm('¿Estás seguro? El proyecto se eliminará de la lista. Deberás presionar "Guardar Todos los Cambios" para confirmar.')) {
-                    e.target.closest('.accordion-item').remove();
-                }
-            });
-        }
         return div;
     }
-    
+
     async function saveChanges(projectsToSave, statusElement) {
         try {
             statusElement.textContent = 'Guardando...';
@@ -208,43 +235,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    document.getElementById('save-all-button').addEventListener('click', async () => {
-        const projectForms = document.querySelectorAll('#project-accordion .editor-proyecto-item');
-        const updatedProjects = [];
-        projectForms.forEach(form => {
-            const titulo = form.querySelector('.titulo').value;
-            updatedProjects.push({
-                titulo,
-                descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
-                imagenUrl: form.querySelector('.imagenUrl').value,
-                altImagen: `Captura de pantalla del proyecto ${titulo}`,
-                enlaceUrl: form.querySelector('.enlaceUrl').value,
-                categoria: form.querySelector('.categoria').value
-            });
-        });
-        if (await saveChanges(updatedProjects, document.getElementById('status'))) {
-            allProjects = updatedProjects;
-        }
-    });
-
-    document.getElementById('save-new-button').addEventListener('click', async () => {
-        const form = document.getElementById('create-project-form').querySelector('.editor-proyecto-item');
-        const titulo = form.querySelector('.titulo').value;
-        if (!titulo) { alert("El título no puede estar vacío."); return; }
-        const newProject = {
-            titulo,
-            descripcion: tinymce.get(form.querySelector('.descripcion').id).getContent(),
-            imagenUrl: form.querySelector('.imagenUrl').value,
-            altImagen: `Captura de pantalla del proyecto ${titulo}`,
-            enlaceUrl: form.querySelector('.enlaceUrl').value,
-            categoria: form.querySelector('.categoria').value
-        };
-        const projectsToSave = [newProject, ...allProjects];
-        if (await saveChanges(projectsToSave, document.getElementById('create-status'))) {
-            await loadProjects();
-            showView('edit');
-        }
-    });
-
     initApp();
 });
