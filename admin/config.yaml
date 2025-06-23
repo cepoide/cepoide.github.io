@@ -1,0 +1,24 @@
+# admin/config.yml
+
+backend:
+  name: github
+  repo: cepoide/cepoide.github.io # ¡Tu usuario y repositorio!
+  branch: main # O la rama que uses, ej: master
+
+media_folder: "img" # Carpeta donde guardarás las imágenes de los proyectos
+public_folder: "/img" # Ruta pública para acceder a esas imágenes
+
+collections:
+  - name: "proyectos" # Nombre de la colección (interno)
+    label: "Proyectos" # Etiqueta que verás en el panel
+    folder: "" # Deja esto en blanco para guardar en la raíz
+    file: "proyectos.json" # El archivo que vamos a editar
+    create: true # Permite crear nuevos proyectos
+    slug: "{{fields.titulo}}" # Esto no se usará pero es requerido
+    fields: # Aquí definimos los campos de cada proyecto
+      - {label: "Título", name: "titulo", widget: "string"}
+      - {label: "Descripción", name: "descripcion", widget: "markdown"}
+      - {label: "URL de la Imagen", name: "imagenUrl", widget: "image"}
+      - {label: "Texto Alternativo (Alt)", name: "altImagen", widget: "string", optional: true}
+      - {label: "URL del Proyecto", name: "enlaceUrl", widget: "string"}
+      - {label: "Categoría", name: "categoria", widget: "select", options: ["Facultad", "Personal"]}
