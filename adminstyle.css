@@ -1,0 +1,100 @@
+/* Estilos Generales del Panel */
+main.admin-main { 
+    max-width: 900px; 
+    margin: 20px auto; 
+    padding: 20px; 
+}
+
+.admin-view { 
+    display: none; /* Oculta todas las vistas por defecto */
+} 
+
+#login-view { 
+    text-align: center; 
+}
+
+/* Barra de Navegación del Admin */
+.admin-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #eeeeee;
+    transition: background-color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.admin-nav .nav-links a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.admin-nav .nav-links a:hover, .admin-nav .nav-links a.active {
+    background-color: #e0e0e0;
+}
+
+.admin-nav .nav-controls button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+}
+
+/* Estilos para los formularios de edición */
+.editor-proyecto-item { 
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 20px; 
+    margin-bottom: 20px; 
+}
+
+.editor-proyecto-item label { 
+    font-weight: bold; 
+    margin-top: 10px;
+    margin-bottom: 5px; 
+    display: block; 
+}
+
+.editor-proyecto-item input, .editor-proyecto-item select { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 1em; 
+}
+
+/* Tema Oscuro */
+body.oscuro .admin-nav {
+    background-color: #333;
+    border-bottom: 1px solid #444;
+}
+
+body.oscuro .admin-nav .nav-links a {
+    color: #e0e0e0;
+}
+
+body.oscuro .admin-nav .nav-links a:hover, body.oscuro .admin-nav .nav-links a.active {
+    background-color: #4a4a4a;
+}
+
+body.oscuro .admin-nav .nav-controls button {
+    color: #e0e0e0;
+}
+
+body.oscuro .editor-proyecto-item { 
+    background-color: #4a4a4a; 
+    border-color: #5a5a5a; 
+}
+
+body.oscuro .editor-proyecto-item input, body.oscuro .editor-proyecto-item select, body.oscuro .tox .tox-edit-area__iframe {
+    background-color: #555 !important;
+    color: #fff !important;
+    border-color: #666 !important;
+}
