@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        main { max-width: 900px; margin: 20px auto; }
+        .editor-proyecto-item { background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        body.oscuro .editor-proyecto-item { background-color: #4a4a4a; border-color: #5a5a5a; }
+        .editor-proyecto-item label { font-weight: bold; margin-bottom: 5px; display: block; }
+        .editor-proyecto-item input, .editor-proyecto-item select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; }
+        .login-container, .editor-container { padding: 40px; text-align: center; }
+        button { padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; color: white; background-color: #007bff; margin: 5px; }
+        button.delete-button { background-color: #dc3545; }
+    </style>
+    
+    <script src="https://cdn.tiny.cloud/1/z02wm9cmyhv75ejxmfjm37ow5v4zkhtzelndpv8cdldnc56s/tinymce/7/tinymce.min.js" referrerpolicy="origin" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/octokit@3.2.0/dist-web/octokit-web.min.js" defer></script>
+    <script src="admin.js" defer></script>
+</head>
+<body>
+    <main>
+        <div id="login-container">
+            <h1>Panel de Administración</h1>
+            <p>Debes iniciar sesión con GitHub para editar el contenido.</p>
+            <button id="login-button">Iniciar Sesión con GitHub</button>
+        </div>
+
+        <div id="editor-container" style="display: none;">
+            <h1>Editor de Proyectos</h1>
+            <div id="proyectos-editor-list"></div>
+            <hr>
+            <button id="add-project-button">Añadir Nuevo Proyecto</button>
+            <button id="save-button" style="background-color: #28a745;">Guardar Todos los Cambios</button>
+            <p id="status"></p>
+        </div>
+    </main>
+</body>
+</html>
