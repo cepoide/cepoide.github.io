@@ -4,7 +4,7 @@ backend:
   repo: cepoide/cepoide.github.io
   branch: main
   auth_type: implicit
-  app_id: TU_CLIENT_ID_DE_GITHUB # ¡No olvides pegar tu Client ID aquí!
+  app_id: Ov23liw9dOe4vGZ3Ueqy # ¡No olvides pegar tu Client ID aquí!
 
 # Media: Configuración para las imágenes
 media_folder: "img"
