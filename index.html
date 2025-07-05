@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cepoide
+</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="img/favicon.png" type="image/png" />
+</head>
+
+<body>
+
+<div id="mode-selector-bar">
+  <div id="mode-handle"></div>
+</div>
+
+<div id="desktop">
+  <div class="icon" data-target-window="myWindow">
+    <img src="img/about.png" alt="About Icon" />
+    <span>About</span>
+  </div>
+
+  <div class="icon" data-target-window="projectsWindow">
+    <img src="img/projects.ico" alt="Projects Icon" />
+    <span>Projects</span>
+  </div>
+</div>
+
+<!-- Ventana About -->
+<div class="win98-window" id="myWindow" style="display: none;">
+  <div class="titlebar">
+    <span class="titlebar-text">
+      <img src="img/abouttitlebar.png" alt="Icono ventana" class="titlebar-icon" />
+      About
+    </span>
+    <button class="close-btn">×</button>
+  </div>
+
+  <div class="window-content about-content">
+    <div class="inner-content-box">
+      <div class="about-text">
+        <h2 data-text="Marcos Alexis Arauz">Marcos Alexis Arauz</h2>
+
+        <div class="profile-image-container">
+          <img src="img/yo.svg" alt="Mi Foto de Perfil" class="profile-image" />
+        </div>
+
+        <div class="dialogue-bubble">
+          <p id="bubble-text">
+            Multimedia designer, web developer, and programmer with solid experience in graphic design and interactive media. Skilled in creating and optimizing user-centered digital experiences, proficient in modern programming languages, multimedia production, and design tools. Results-driven and proactive, with a proven ability to solve technical and creative challenges through innovative, efficient, and visually engaging solutions.
+          </p>
+        </div>
+      </div>
+
+      <div class="contact-icons">
+        <a href="https://discord.com/users/marcos.alexis" target="_blank">
+          <img src="img/discord.png" alt="Discord" />
+        </a>
+        <a href="mailto:soymarcosarauz@gmail.com" target="_blank">
+          <img src="img/gmail.png" alt="Gmail" />
+        </a>
+        <a href="https://github.com/cepoide/" target="_blank">
+          <img src="img/github.png" alt="GitHub" />
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ventana Projects -->
+<div class="win98-window window-dotted-bg" id="projectsWindow" style="display: none;">
+  <div class="titlebar">
+    <span class="titlebar-text">
+      <img src="img/projects.ico" alt="Icono ventana" class="titlebar-icon" />
+      Projects
+    </span>
+    <button class="close-btn">×</button>
+  </div>
+
+  <div class="window-content projects-folders">
+    <div class="folder">
+      <img src="img/personal.png" alt="Personal" class="folder-icon" />
+      <span>Personal</span>
+    </div>
+    <div class="folder">
+      <img src="img/professional.png" alt="Professional" class="folder-icon" />
+      <span>Professional</span>
+    </div>
+    <div class="folder">
+      <img src="img/university.png" alt="University" class="folder-icon" />
+      <span>University</span>
+    </div>
+    <div class="folder">
+      <img src="img/tulskil.png" alt="Tools & Skills" class="folder-icon" />
+      <span>skills</span>
+    </div>
+  </div>
+</div>
+
+<!-- Ventanas flotantes -->
+<div id="window-personal" class="floating-window" style="display: none; background-color: rgba(244, 136, 227, 0.8);">
+  <button class="close-floating">×</button>
+  <div class="ventana-contenido"></div>
+</div>
+
+<div id="window-university" class="floating-window" style="display: none; background-color: rgba(208, 144, 255, 0.8);">
+  <button class="close-floating">×</button>
+  <div class="ventana-contenido"></div>
+</div>
+
+<div id="window-professional" class="floating-window" style="display: none; background-color: rgba(84, 107, 184, 0.8);">
+  <button class="close-floating">×</button>
+  <div class="ventana-contenido"></div>
+</div>
+
+<div id="window-skills" class="floating-window" style="display: none; background-color: rgba(255, 193, 126, 0.5);">
+  <button class="close-floating">×</button>
+  <div class="toolstack">
+    <div class="tool">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" />
+      <span>HTML5</span>
+    </div>
+    <div class="tool">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" />
+      <span>CSS3</span>
+    </div>
+    <div class="tool">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" />
+      <span>JavaScript</span>
+    </div>
+    <div class="tool">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-original.svg" alt="SQL Server" />
+      <span>Microsoft SQL Server</span>
+    </div>
+    <div class="tool">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-original.svg" alt=".NET" />
+      <span>.NET</span>
+    </div>
+    <div class="tool">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" />
+      <span>Git</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/photoshop/photoshop-original.svg" alt="Photoshop" />
+      <span>Photoshop</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/vscode/vscode-original.svg" alt="VS Code" />
+      <span>VS Code</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/visualstudio/visualstudio-original.svg" alt="Visual Studio" />
+      <span>Visual Studio</span>
+    </div>
+    <div class="tool">
+      <img src="img/processing.svg" alt="Processing" />
+      <span>Processing</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/php/php-original.svg" alt="PHP" />
+      <span>PHP</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/json/json-original.svg" alt="JSON" />
+      <span>JSON</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/figma/figma-original.svg" alt="Figma" />
+      <span>Figma</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/csharp/csharp-original.svg" alt="C#" />
+      <span>C#</span>
+    </div>
+    <div class="tool">
+      <img src="https://raw.githubusercontent.com/devicons/devicon/v2.16.0/icons/aftereffects/aftereffects-original.svg" alt="After Effects" />
+      <span>After Effects</span>
+    </div>
+  </div>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>

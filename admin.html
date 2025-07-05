@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="adminstyle.css" />
+    <script src="libs/tinymce/tinymce.min.js"></script>
+    <script src="admin.js" defer></script>
+</head>
+<body>
+    <main id="login-view" class="admin-main admin-view">
+        <h1 style="text-align: center;">Alto ahi maquina</h1>
+        <img src="img/altoahimaquina.jpg" alt="Imagen de login" class="login-image">
+        <p>Para entrar tenes que decirme la contraseña</p>
+        <textarea id="token-input" placeholder="La contraseña"></textarea>
+        <div>
+            <button id="save-token-button" class="admin-button btn-create">Guardar contraseña y entrar</button>
+        </div>
+        <p id="login-status"></p>
+    </main>
+
+    <div id="panel-container" class="admin-view">
+        <nav class="admin-nav">
+            <div class="nav-links">
+                <a href="#edit" id="nav-edit">Editar Proyectos</a>
+                <a href="#create" id="nav-create">Crear Nuevo Proyecto</a>
+            </div>
+            <div class="nav-controls">
+                <button id="admin-theme-toggle">☀️</button>
+            </div>
+        </nav>
+        <main class="admin-main">
+            <div id="edit-view" class="admin-view">
+                <div id="projects-table-container">
+                    <table class="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Categoría</th>
+                                <th class="actions-cell">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-table-body">
+                            </tbody>
+                    </table>
+                </div>
+                <div id="single-project-editor-container" style="display: none;">
+                    <h2 id="editor-heading">Editando Proyecto</h2>
+                    <div id="single-project-form"></div>
+                    <button id="save-single-button" class="admin-button btn-save">Guardar Cambios</button>
+                    <button id="cancel-edit-button" class="admin-button btn-cancel">Volver al Listado</button>
+                    <p id="status"></p>
+                </div>
+            </div>
+            <div id="create-view" class="admin-view">
+                <h2>Crear Nuevo Proyecto</h2>
+                <div id="create-project-form"></div>
+                <button id="save-new-button" class="admin-button btn-create">Guardar Nuevo Proyecto</button>
+                <p id="create-status"></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
