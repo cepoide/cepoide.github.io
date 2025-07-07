@@ -586,11 +586,6 @@ function openProjectDetail(project, parentWindow) {
         detailContainer.appendChild(mainImage);
     }
 
-    const descriptionDiv = document.createElement('div');
-    descriptionDiv.classList.add('descripcion-proyecto');
-    descriptionDiv.innerHTML = tempDiv.innerHTML;
-    detailContainer.appendChild(descriptionDiv);
-
     const projectLink = document.createElement('a');
     projectLink.href = project.enlaceUrl;
     projectLink.target = '_blank';
@@ -598,6 +593,11 @@ function openProjectDetail(project, parentWindow) {
     projectLink.classList.add('boton-ver-proyecto');
     projectLink.textContent = 'Ver proyecto online';
     detailContainer.appendChild(projectLink);
+
+    const descriptionDiv = document.createElement('div');
+    descriptionDiv.classList.add('descripcion-proyecto');
+    descriptionDiv.innerHTML = tempDiv.innerHTML;
+    detailContainer.appendChild(descriptionDiv);
 
     const closeButton = parentWindow.querySelector('.close-floating');
     if (!closeButton) return;
