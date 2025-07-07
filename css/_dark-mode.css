@@ -1,0 +1,207 @@
+/* ============================================================
+    Modo Oscuro
+============================================================ */
+
+body.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode html,
+body.dark-mode body {
+    background-color: #222; /* Un tono más oscuro para el fondo principal */
+}
+
+
+
+
+body.dark-mode .icon span {
+    text-shadow: 1px 1px #000; /* Sombra del texto del ícono (ya estaba, la mantengo para consistencia) */
+}
+
+body.dark-mode .win98-window {
+    background-color: #555;
+    border-color: #222;
+    border-top-color: #888;
+    border-left-color: #888;
+}
+
+body.dark-mode .titlebar {
+    background-color: #000040;
+}
+
+body.dark-mode .close-btn {
+    background-color: #555;
+    border-color: #222;
+    border-top-color: #888;
+    border-left-color: #888;
+    color: #fff;
+}
+
+body.dark-mode .close-btn:hover {
+    background-color: #666;
+}
+
+body.dark-mode .inner-content-box {
+    background-color: #444;
+    border-color: #000;
+    border-top-color: #fff;
+    border-left-color: #fff;
+}
+
+body.dark-mode .dialogue-bubble {
+    background-color: #222;
+    color: #fff;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.03) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+}
+
+body.dark-mode .about-text,
+body.dark-mode .about-text h2,
+body.dark-mode .about-text p,
+body.dark-mode .about-text li {
+    color: #fff;
+}
+
+body.dark-mode .about-text h2::before {
+    color: #00e0e0;
+}
+
+body.dark-mode .about-text h2::after {
+    color: #e000e0;
+}
+
+body.dark-mode #mode-selector-bar {
+    background-color: #555;
+    border-color: #222;
+    border-top-color: #888;
+    border-left-color: #888;
+    box-shadow: 1px 1px 3px rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode #mode-handle {
+    background-color: #000;
+    border-color: #888;
+    box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode .contact-icons img {
+    filter: drop-shadow(1px 1px 2px rgba(255,255,255,0.3));
+}
+
+body.dark-mode .contact-icons img:hover {
+    filter: drop-shadow(2px 2px 4px rgba(255,255,255,0.5));
+}
+
+body.dark-mode .projects-content {
+    background-color: #222; /* Fondo de la sección de proyectos */
+    box-shadow: inset 1px 1px 0 #444, inset -1px -1px 0 #444; /* Sombra interna para modo oscuro */
+    color: #aaa; /* Color de texto para el modo oscuro */
+}
+
+body.dark-mode .folder {
+    color: #fff; /* Texto de la carpeta en blanco */
+}
+
+body.dark-mode .folder:hover {
+    background-color: rgba(0, 120, 215, 0.3); /* Un azul más oscuro al pasar el ratón */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); /* Sombra más clara para el modo oscuro */
+}
+
+
+body.dark-mode .floating-window {
+    background-color: #333; /* Fondo de la ventana flotante en modo oscuro */
+    background-image:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255, 0, 0, 0.1) 2px, transparent 2px); /* Líneas en modo oscuro */
+    border: 1px solid #555; /* Borde más oscuro */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada */
+}
+
+body.dark-mode .hoja-rayada {
+    background-color: #2b2b2b; /* Beige/gris oscuro tipo papel */
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 19px,
+        #555 20px /* Líneas más oscuras para el modo oscuro */
+    );
+}
+
+body.dark-mode .close-floating span {
+    background: #ccc; /* Color de las líneas del botón de cerrar */
+}
+
+body.dark-mode .resizer::after {
+    border-color: transparent rgba(255,255,255,0.4) rgba(255,255,255,0.4) transparent; /* Color del resizer en modo oscuro */
+}
+
+
+body.dark-mode .proyecto-item {
+    background: #444; /* Fondo del item de proyecto en modo oscuro */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.6); /* Sombra más oscura */
+    color: #eee; /* Color de texto más claro */
+    border: 1px solid #666; /* Borde del item */
+}
+
+body.dark-mode .proyecto-item::after {
+    background: rgba(255,255,255,0.2); /* Línea inferior del item */
+}
+
+body.dark-mode .preview-img {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4); /* Sombra de la imagen de previsualización */
+}
+
+body.dark-mode .preview-title {
+    color: #fff; /* Título de previsualización en blanco */
+}
+
+body.dark-mode .detalle-proyecto-slider img {
+    box-shadow: 0 2px 6px rgba(0,0,0,1); /* Sombra de la imagen del slider */
+}
+
+body.dark-mode .detalle-proyecto-slider button::before,
+body.dark-mode .detalle-proyecto-slider button::after {
+    background: #ccc; /* Color de las líneas de la flecha del slider */
+}
+
+body.dark-mode .detalle-proyecto-slider button:hover::before,
+body.dark-mode .detalle-proyecto-slider button:hover::after {
+    background: #00ffff; /* Cambia a un color cian brillante al hacer hover */
+}
+
+body.dark-mode .boton-ver-proyecto {
+    color: #fff; /* Color del texto del botón en modo oscuro */
+}
+
+body.dark-mode .boton-ver-proyecto::after {
+    background: rgba(255, 89, 0, 0.5); /* Fondo del efecto hover del botón */
+}
+
+body.dark-mode .detalle-proyecto-titulo {
+    color: #fff; /* Título del detalle del proyecto en blanco */
+}
+
+body.dark-mode .descripcion-proyecto {
+    color: #ddd; /* Descripción del proyecto en un gris más claro */
+}
+
+
+body.dark-mode .tool {
+    color: #eee; /* Color de texto para el nombre de la habilidad */
+}
+
+
+body.dark-mode .window-dotted-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+}
+
+body.dark-mode .profile-image {
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.8));
+}

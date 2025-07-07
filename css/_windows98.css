@@ -1,0 +1,108 @@
+/* ============================================================
+    Ventana Windows 98 Base
+============================================================ */
+
+.win98-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 600px;
+    min-width: 200px;
+    min-height: 100px;
+    background-color: #c0c0c0;
+    border: 2px solid #000000;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+    font-family: Tahoma, sans-serif;
+    z-index: 10;
+    overflow: hidden;
+}
+
+/* Barra de Título */
+.titlebar {
+    background-color: #000080;
+    color: white;
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 12px;
+}
+
+.titlebar-text {
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    color: white;
+    white-space: nowrap;
+}
+
+.titlebar-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    user-select: none;
+}
+
+/* Botón de Cerrar */
+.close-btn {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #c0c0c0;
+    border: 2px outset #ffffff;
+    border-bottom-color: #000000;
+    border-right-color: #000000;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s ease, border 0.1s ease;
+}
+
+.close-btn:hover {
+    background-color: #b0b0b0;
+}
+
+.close-btn:active {
+    border: 2px inset #000000;
+    border-bottom-color: #ffffff;
+    border-right-color: #ffffff;
+    padding: 1px;
+}
+
+/* Contenido de la Ventana */
+.window-content {
+    padding: 6px;
+    font-size: 12px;
+    height: calc(100% - 20px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+}
+
+/* Recuadro Interno (con patrón de puntos) */
+.inner-content-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+    background-image: radial-gradient(circle, #cbcbcb 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 2px inset #000000;
+    border-bottom-color: #ffffff;
+    border-right-color: #ffffff;
+    padding: 10px;
+    position: relative;
+}
+
+/* Fondo para ventanas de proyectos */
+.window-dotted-bg {
+    background-color: #f0f0f0;
+    background-image: radial-gradient(circle, #cbcbcb 1px, transparent 1px);
+    background-size: 20px 20px;
+}

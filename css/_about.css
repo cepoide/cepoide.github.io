@@ -1,0 +1,145 @@
+/* ============================================================
+    Sección "About Me"
+============================================================ */
+
+.about-text {
+    position: relative;
+    flex-grow: 1;
+}
+
+.dialogue-bubble {
+    position: relative; /* para ocupar espacio */
+    margin-top: -190px;
+    max-width: 600px;
+    min-height: 90px;
+    margin-left: 250px; /* espacio para la foto + margen */
+    background-color: #fff;
+    color: #000;
+    padding: 10px 15px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+    line-height: 1.4;
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.03),
+        rgba(0, 0, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 4px
+    );
+    clear: both;
+}
+
+/* Título de la sección About */
+.about-text h2 {
+    line-height: 10px;
+    margin-bottom: 20px;
+    font-family: 'Pixellari', Tahoma, sans-serif;
+    font-size: 4.8em;
+    text-align: center;
+    color: white;
+    z-index: 1;
+    position: relative;
+}
+
+.about-text h2::before,
+.about-text h2::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    opacity: 0.8;
+    z-index: 0;
+}
+
+.about-text h2::before {
+    color: #00ffff;
+    animation: glitch 2s infinite alternate-reverse linear;
+}
+
+.about-text h2::after {
+    color: #ff00ff;
+    animation: glitch 2s infinite alternate linear;
+}
+
+@keyframes glitch {
+    0%   { transform: translate(0, 0); }
+    20%  { transform: translate(-2px, 1px); }
+    40%  { transform: translate(2px, -1px); }
+    60%  { transform: translate(-1px, -2px); }
+    80%  { transform: translate(1px, 2px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Imagen de Perfil */
+.profile-image-container {
+    width: 150px;
+    margin: 0 0 20px 30px;
+    text-align: left;
+}
+
+.profile-image {
+    margin-top: 80%;
+    margin-left: 25px;
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.5));
+    transition: transform 0.3s ease;
+}
+
+.profile-image:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+/* Animaciones de Espiral */
+@keyframes spiralOut {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(720deg) scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes spiralIn {
+    0% {
+        transform: rotate(-720deg) scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+.profile-image.spiral-out {
+    animation: spiralOut 0.5s ease forwards;
+}
+
+.profile-image.spiral-in {
+    animation: spiralIn 0.5s ease forwards;
+}
+
+/* Texto Adicional en About */
+.about-text p,
+.about-text ul {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.about-text ul {
+    padding-left: 20px;
+}
+
+.about-text li {
+    margin-bottom: 5px;
+}

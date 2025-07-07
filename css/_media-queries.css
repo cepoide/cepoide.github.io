@@ -1,0 +1,303 @@
+/* Media Query para pantallas con un ancho máximo de 768px (tabletas y celulares) */
+@media (max-width: 768px) {
+
+/* ============================================================
+    Ventana About
+============================================================ */
+
+    .about-text {
+        display: flex;
+        flex-direction: column; /* Apila los elementos verticalmente */
+        align-items: center; /* Centra los elementos */
+        text-align: center; /* Centra el texto */
+    }
+
+    .about-text h2 {
+        font-size: 3.5em; /* Reduce el tamaño del título */
+        margin-bottom: 10px; /* Ajusta el margen inferior */
+        line-height: 1.2; /* Mejora la legibilidad en líneas múltiples */
+    }
+
+    .profile-image-container {
+        width: 100px; /* Reduce el tamaño del contenedor de la imagen */
+        margin: 20px auto 0 auto; /* Centra la imagen y ajusta el margen */
+        text-align: center;
+    }
+
+    .profile-image {
+        margin-top: 0; /* Elimina el margen superior excesivo */
+        margin-left: 0; /* Centra la imagen */
+        width: 100%;
+    }
+
+    .dialogue-bubble {
+        margin-top: 20px; /* Ajusta el margen superior para separar de la imagen */
+        margin-left: auto; /* Centra la burbuja de diálogo */
+        margin-right: auto; /* Centra la burbuja de diálogo */
+        max-width: 90%; /* Limita el ancho de la burbuja para que no ocupe toda la pantalla */
+        min-height: auto; /* Permite que la altura se ajuste al contenido */
+        font-size: 13px; /* Reduce un poco el tamaño de la fuente */
+        padding: 15px; /* Aumenta el padding para mejor legibilidad */
+        border-top-left-radius: 10px; /* Asegura un radio uniforme en móviles */
+    }
+
+    .about-text p,
+    .about-text ul {
+        text-align: center; /* Centra el texto y las listas */
+        padding-left: 0; /* Elimina el padding de la lista si está centrado */
+    }
+
+    .about-text ul {
+        list-style-position: inside; /* Mueve los puntos de la lista dentro del contenido */
+    }
+
+/* ============================================================
+    Ventana Windows 98 Base
+============================================================ */
+
+    .win98-window {
+        width: 95%; /* Ocupa casi todo el ancho de la pantalla */
+        height: 80vh; /* Altura basada en el viewport height para adaptarse mejor */
+        max-width: 600px; /* Limita el ancho máximo para tabletas */
+        min-width: unset; /* Elimina el min-width fijo para permitir más flexibilidad */
+        min-height: unset; /* Elimina el min-height fijo */
+        transform: translate(-50%, -50%); /* Mantiene el centrado */
+        /* Aseguramos que la ventana no sea demasiado grande en pantallas medianas */
+    }
+
+    .titlebar {
+        height: 18px; /* Reduce ligeramente la altura de la barra de título */
+        padding: 0 4px; /* Reduce el padding */
+        font-size: 11px; /* Reduce el tamaño de la fuente */
+    }
+
+    .titlebar-icon {
+        width: 14px; /* Icono más pequeño */
+        height: 14px; /* Icono más pequeño */
+        margin-right: 4px; /* Reduce el margen */
+    }
+
+    .close-btn {
+        width: 14px; /* Botón de cerrar más pequeño */
+        height: 14px; /* Botón de cerrar más pequeño */
+        font-size: 11px; /* Tamaño de fuente del texto 'X' */
+    }
+
+    .window-content {
+        padding: 4px; /* Reduce el padding del contenido de la ventana */
+        font-size: 11px; /* Reduce el tamaño de la fuente del contenido */
+        height: calc(100% - 18px); /* Ajusta la altura del contenido a la nueva barra de título */
+        flex-direction: column; /* Apila el contenido si hay varios elementos internos */
+    }
+
+    .inner-content-box {
+        padding: 8px; /* Reduce el padding interno del recuadro */
+        background-size: 15px 15px; /* Reduce el tamaño del patrón de puntos */
+    }
+
+/* ============================================================
+    Escritorio e Iconos
+============================================================ */
+
+    #desktop {
+        /* Para pantallas más pequeñas, podríamos querer que los iconos fluyan mejor */
+        flex-direction: row; /* Cambia a fila para que los iconos se distribuyan horizontalmente */
+        flex-wrap: wrap; /* Permite que los iconos se envuelvan a la siguiente línea */
+        justify-content: center; /* Centra los iconos horizontalmente */
+        align-items: center; /* Centra los iconos verticalmente si hay varias filas */
+        padding: 5px; /* Reduce el padding general del escritorio */
+        gap: 5px; /* Reduce el espacio entre los iconos */
+    }
+
+    .icon {
+        width: 70px; /* Aumenta ligeramente el ancho para que el área de toque sea más grande */
+        margin: 5px; /* Reduce el margen para compactar */
+        padding: 5px; /* Añade un poco de padding para que el contenido no pegue a los bordes */
+    }
+
+    .icon img {
+        width: 40px; /* Reduce el tamaño del icono de imagen */
+        height: 40px; /* Reduce el tamaño del icono de imagen */
+        margin-bottom: 3px; /* Reduce el margen inferior */
+    }
+
+    .icon span {
+        font-size: 11px; /* Reduce el tamaño del texto para nombres de iconos */
+        /* Asegúrate de que el texto sea legible */
+        word-break: break-word; /* Permite que palabras largas se rompan y se envuelvan */
+        white-space: normal; /* Asegura que el texto se envuelva */
+    }
+
+
+
+
+    .projects-content {
+        /* En pantallas pequeñas, el texto de "no projects yet" puede ser más pequeño */
+        font-size: 12px;
+        padding: 5px; /* Reduce el padding si es necesario */
+    }
+
+    /* Iconos de Carpeta (dentro de la ventana de proyectos) */
+    .projects-folders {
+        gap: 6px; /* Reduce el espacio entre las carpetas */
+        padding: 6px; /* Reduce el padding */
+        justify-content: center; /* Centra las carpetas si no llenan la línea */
+    }
+
+    .folder {
+        width: 70px; /* Reduce el ancho de la carpeta para más espacio */
+        height: 65px; /* Ajusta la altura */
+    }
+
+    .folder-icon {
+        width: 40px; /* Reduce el tamaño del icono de carpeta */
+        height: 40px;
+        padding: 3px; /* Reduce el padding del icono */
+    }
+
+    .folder span {
+        font-size: 10px; /* Reduce el tamaño del texto del nombre de la carpeta */
+        line-height: 1.1; /* Ajusta el line-height */
+        word-break: break-word; /* Permite que el texto se rompa */
+        white-space: normal; /* Asegura el envoltorio del texto */
+    }
+
+    /* Ventanas Flotantes de Proyectos (detalle) */
+    .floating-window {
+        top: 50%; /* Centra la ventana verticalmente */
+        left: 50%; /* Centra la ventana horizontalmente */
+        transform: translate(-50%, -50%); /* Asegura el centrado */
+        width: 95vw; /* Ocupa casi todo el ancho del viewport */
+        height: 90vh; /* Ocupa casi todo el alto del viewport */
+        max-width: 100vw; /* Asegura que no sobrepase el ancho del viewport */
+        max-height: 100vh; /* Asegura que no sobrepase el alto del viewport */
+        min-width: unset; /* Elimina el min-width fijo */
+        min-height: unset; /* Elimina el min-height fijo */
+        padding: 5px; /* Reduce el padding general de la ventana flotante */
+        border-radius: 2px; /* Reduce un poco el border-radius */
+        background-size: 100% 20px, 30px 100%; /* Ajusta el tamaño de las rayas */
+    }
+
+    .close-floating {
+        top: 2px; /* Ajusta la posición del botón de cerrar */
+        right: 2px;
+        width: 18px; /* Reduce el tamaño del botón de cerrar */
+        height: 18px;
+    }
+
+    .close-floating span {
+        width: 14px; /* Reduce el tamaño de las líneas del botón de cerrar */
+        height: 1.8px;
+        left: 2px;
+    }
+
+    .resizer {
+        width: 12px; /* Reduce el tamaño del manejador de redimensionamiento */
+        height: 12px;
+    }
+
+    .resizer::after {
+        right: 2px; /* Ajusta la posición de la marca del resizer */
+        bottom: 2px;
+        border-width: 6px 6px 0 0; /* Reduce el tamaño de la marca */
+    }
+
+    .ventana-contenido {
+        gap: 10px; /* Reduce el espacio entre los items de proyecto */
+        padding: 8px; /* Reduce el padding */
+        justify-content: center; /* Centra los items */
+    }
+
+    .proyecto-item {
+        width: 100px; /* Reduce el ancho del item de proyecto */
+        padding: 6px 6px 20px 6px; /* Ajusta el padding */
+        font-size: 10px; /* Reduce el tamaño de la fuente */
+        box-shadow: 1px 1px 4px rgba(0,0,0,0.3); /* Sombra más sutil */
+    }
+
+    .proyecto-item::after {
+        height: 1.5px; /* Línea más delgada */
+        bottom: 4px; /* Sube la línea un poco */
+    }
+
+    .preview-img {
+        width: 100px; /* Reduce el ancho de la imagen de preview */
+        height: 80px; /* Reduce la altura de la imagen de preview */
+        box-shadow: 0 1px 2px rgba(0,0,0,0.15); /* Sombra más sutil */
+    }
+
+    .preview-title {
+        margin-top: 4px; /* Reduce el margen superior */
+        font-size: 0.9em; /* Reduce el tamaño del título de preview */
+    }
+
+    /* Slider de detalles de proyecto */
+    .detalle-proyecto-slider {
+        min-height: 180px; /* Ajusta la altura mínima del slider */
+        margin-bottom: 8px; /* Reduce el margen inferior */
+    }
+
+    .detalle-proyecto-slider img {
+        max-height: 150px; /* Reduce la altura máxima de las imágenes del slider */
+        box-shadow: 0 1px 4px rgba(0,0,0,0.8); /* Sombra más sutil */
+    }
+
+    .detalle-proyecto-slider button {
+        width: 30px; /* Botones del slider más pequeños */
+        height: 30px;
+    }
+
+    /* Ajuste de las flechas dentro de los botones del slider */
+    .detalle-proyecto-slider button::before,
+    .detalle-proyecto-slider button::after {
+        width: 12px; /* Flechas más pequeñas */
+        height: 1.5px;
+    }
+
+    .detalle-proyecto-slider button.left::before {
+        top: 15px; /* Ajusta la posición de la flecha izquierda */
+        left: 8px;
+    }
+    .detalle-proyecto-slider button.left::after {
+        top: 16px;
+        left: 8px;
+    }
+    .detalle-proyecto-slider button.right::before {
+        top: 15px; /* Ajusta la posición de la flecha derecha */
+        right: 8px;
+    }
+    .detalle-proyecto-slider button.right::after {
+        top: 16px;
+        right: 8px;
+    }
+
+    .detalle-proyecto-slider button.left {
+        left: 4px; /* Ajusta la posición de los botones del slider */
+    }
+
+    .detalle-proyecto-slider button.right {
+        right: 4px;
+    }
+
+    /* Botón "Ver Proyecto" */
+    .boton-ver-proyecto {
+        padding: 6px 12px; /* Reduce el padding del botón */
+        font-size: 14px; /* Reduce el tamaño de la fuente */
+    }
+
+    .boton-ver-proyecto::after {
+        height: 12px; /* Ajusta la altura del subrayado */
+    }
+
+    .detalle-proyecto-titulo {
+        font-size: 1.8em; /* Reduce el tamaño del título de detalle */
+        margin-top: -10px; /* Ajusta el margen superior */
+    }
+
+    .descripcion-proyecto {
+        font-size: 1em; /* Reduce ligeramente el tamaño de la descripción */
+        line-height: 1.4; /* Ajusta el line-height */
+        margin-bottom: 15px; /* Reduce el margen inferior */
+        padding: 0 3px; /* Reduce el padding */
+    }
+}
