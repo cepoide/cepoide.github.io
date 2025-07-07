@@ -7,14 +7,89 @@ document.addEventListener("DOMContentLoaded", () => {
     initWindows();
     initModeToggle();
     initProfileImageRotation();
-    loadProjectsFromGitHub(); // Esta llamada inicial seguirá siendo para la primera carga
+    loadProjectsFromGitHub();
+    // Agregamos un listener para el evento resize
+    window.addEventListener('resize', handleWindowResize);
+    handleWindowResize(); // Llamada inicial para establecer el estado responsive de las ventanas
 });
 
 let zIndexCounter = 10;
-const baseTop = 50;
-const baseLeft = 50;
-const offset = 30;
+// Las variables baseTop y baseLeft ahora son porcentajes para mayor adaptabilidad
+const baseTop = 10; // % del alto de la ventana
+const baseLeft = 10; // % del ancho de la ventana
+const offset = 2; // % para el desplazamiento de ventanas apiladas
 let openedCount = 0;
+
+// Variable para manejar el estado responsive
+let isMobile = false;
+
+// =========================
+// Funciones de utilidad responsive para VENTANAS FLOTANTES
+// =========================
+
+function handleWindowResize() {
+    // Definimos un breakpoint, puedes ajustarlo según tus necesidades de CSS
+    const mobileBreakpoint = 768; // px
+    const currentIsMobile = window.innerWidth < mobileBreakpoint;
+
+    // Solo reajustamos si el modo (mobile/desktop) ha cambiado
+    if (currentIsMobile !== isMobile) {
+        isMobile = currentIsMobile;
+        // Solo afectamos las ventanas flotantes
+        document.querySelectorAll('.floating-window').forEach(win => {
+            if (win.style.display === 'block') { // Solo si la ventana está visible
+                positionFloatingWindow(win);
+                // Si la ventana ya está inicializada, re-aplica el makeResizable
+                // para que el resizer aparezca/desaparezca correctamente
+                if (win.dataset.initialized === 'true') {
+                    makeResizable(win);
+                }
+            }
+        });
+        // También volvemos a renderizar los proyectos para que las imágenes se ajusten
+        // si se quitó o puso la rotación aleatoria
+        if (projectsData.length > 0) {
+            renderProjectsInWindows(projectsData);
+        }
+    }
+}
+
+// Función para posicionar y dimensionar ventanas flotantes de forma responsive
+function positionFloatingWindow(windowElement) {
+    if (isMobile) {
+        // En móvil, las ventanas ocupan casi todo el ancho y alto
+        windowElement.style.top = '5%';
+        windowElement.style.left = '5%';
+        windowElement.style.width = '90%';
+        windowElement.style.height = '90%';
+        windowElement.style.maxWidth = '90%'; // Añadir max-width para asegurar
+        windowElement.style.maxHeight = '90%'; // Añadir max-height para asegurar
+        windowElement.classList.add('no-resizable'); // Desactivamos la redimensión
+    } else {
+        // En escritorio, usamos el posicionamiento original
+        let top = baseTop + openedCount * offset;
+        let left = baseLeft + openedCount * offset;
+
+        // Convertimos porcentajes a píxeles para el posicionamiento
+        top = (window.innerHeight * top) / 100;
+        left = (window.innerWidth * left) / 100;
+
+        const maxTop = window.innerHeight - windowElement.offsetHeight;
+        const maxLeft = window.innerWidth - windowElement.offsetWidth;
+
+        if (top > maxTop) top = (window.innerHeight * baseTop) / 100;
+        if (left > maxLeft) left = (window.innerWidth * baseLeft) / 100;
+
+        windowElement.style.top = `${top}px`;
+        windowElement.style.left = `${left}px`;
+        // Restablecemos ancho/alto a auto o a valores por defecto para desktop
+        windowElement.style.width = '600px'; // Un ancho por defecto o 'auto'
+        windowElement.style.height = '400px'; // Un alto por defecto o 'auto'
+        windowElement.style.maxWidth = 'none'; // Quitar restricciones de max-width/height
+        windowElement.style.maxHeight = 'none';
+        windowElement.classList.remove('no-resizable'); // Aseguramos que se pueda redimensionar
+    }
+}
 
 // =========================
 // Íconos y ventanas
@@ -27,6 +102,16 @@ function initDesktopIcons() {
             if (!targetWindow) return;
 
             targetWindow.style.display = 'block';
+
+            // Solo si es una ventana flotante, aplicamos la lógica responsive
+            if (targetWindow.classList.contains('floating-window')) {
+                positionFloatingWindow(targetWindow);
+            } else {
+                // Para ventanas no flotantes (si las hubiera y no quisieras que fueran responsive)
+                // simplemente asegúrate de que se muestren.
+                // Aquí podrías añadir una lógica de posicionamiento diferente si es necesario
+                // para ventanas estáticas.
+            }
 
             if (!targetWindow.classList.contains('floating-window')) {
                 zIndexCounter++;
@@ -66,7 +151,7 @@ function initWindows() {
 }
 
 // =========================
-// Modo claro/oscuro
+// Modo claro/oscuro (sin cambios, ya que no afecta la responsividad general)
 // =========================
 
 function initModeToggle() {
@@ -120,7 +205,7 @@ function initModeToggle() {
 }
 
 // =========================
-// Efecto máquina de escribir
+// Efecto máquina de escribir (sin cambios)
 // =========================
 
 function typeWriter(element, text, speed = 10) {
@@ -138,7 +223,7 @@ function typeWriter(element, text, speed = 10) {
 }
 
 // =========================
-// Rotación imagen perfil
+// Rotación imagen perfil (sin cambios)
 // =========================
 
 function initProfileImageRotation() {
@@ -161,13 +246,15 @@ function initProfileImageRotation() {
 
             profileImage.addEventListener('animationend', () => {
                 profileImage.classList.remove('spiral-in');
-            }, { once: true });
+            }, {
+                once: true
+            });
         }, 350);
     });
 }
 
 // =========================
-// VENTANAS PROJECTS
+// VENTANAS PROJECTS (con ajustes para responsividad solo en flotantes)
 // =========================
 
 document.querySelectorAll('.folder').forEach(folder => {
@@ -183,17 +270,9 @@ function showWindow(name) {
 
     windowElement.classList.add('floating-window');
 
-    let top = baseTop + openedCount * offset;
-    let left = baseLeft + openedCount * offset;
+    // Usamos la función positionFloatingWindow para gestionar el posicionamiento
+    positionFloatingWindow(windowElement);
 
-    const maxTop = window.innerHeight - windowElement.offsetHeight;
-    const maxLeft = window.innerWidth - windowElement.offsetWidth;
-
-    if (top > maxTop) top = baseTop;
-    if (left > maxLeft) left = baseLeft;
-
-    windowElement.style.top = `${top}px`;
-    windowElement.style.left = `${left}px`;
     windowElement.style.display = 'block';
 
     openedCount++;
@@ -219,8 +298,9 @@ function makeDraggable(el) {
     let offsetY = 0;
     let isDragging = false;
 
-    el.addEventListener('mousedown', e => {
-        if (e.target.classList.contains('close-floating') || e.target.classList.contains('resizer')) return;
+    // Solo hacemos arrastrable si no estamos en modo móvil
+    const startDrag = (e) => {
+        if (isMobile || e.target.classList.contains('close-floating') || e.target.classList.contains('resizer')) return;
 
         isDragging = true;
         offsetX = e.clientX - el.offsetLeft;
@@ -229,19 +309,41 @@ function makeDraggable(el) {
         el.style.cursor = 'grabbing';
 
         bringFloatingWindowToFront(el);
-    });
+    };
 
-    document.addEventListener('mousemove', e => {
+    const drag = (e) => {
         if (!isDragging) return;
 
         el.style.left = `${e.clientX - offsetX}px`;
         el.style.top = `${e.clientY - offsetY}px`;
-    });
+    };
 
-    document.addEventListener('mouseup', () => {
+    const stopDrag = () => {
         isDragging = false;
         el.style.cursor = 'default';
+    };
+
+    el.addEventListener('mousedown', startDrag);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDrag);
+    // Agregamos soporte táctil para arrastrar si NO estamos en móvil
+    el.addEventListener('touchstart', (e) => {
+        if (isMobile) return;
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        startDrag(e);
+    }, {
+        passive: false
     });
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging || isMobile) return;
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        drag(e);
+    }, {
+        passive: false
+    });
+    document.addEventListener('touchend', stopDrag);
 
     const closeBtn = el.querySelector('.close-floating');
     if (closeBtn) {
@@ -254,14 +356,31 @@ function makeDraggable(el) {
 }
 
 function makeResizable(el) {
-    const resizer = document.createElement('div');
-    resizer.className = 'resizer';
-    el.appendChild(resizer);
+    let resizer = el.querySelector('.resizer');
+
+    if (isMobile) {
+        // Si estamos en móvil, aseguramos que el resizer no exista
+        if (resizer) {
+            resizer.remove();
+        }
+        return; // Salimos de la función, no hacemos la ventana redimensionable
+    }
+
+    // Si no estamos en móvil y el resizer no existe, lo creamos
+    if (!resizer) {
+        resizer = document.createElement('div');
+        resizer.className = 'resizer';
+        el.appendChild(resizer);
+    }
+
 
     let isResizing = false;
     let startX, startY, startWidth, startHeight;
 
-    resizer.addEventListener('mousedown', e => {
+    const startResize = (e) => {
+        // No permitimos redimensionar en móvil
+        if (isMobile) return;
+
         isResizing = true;
         startX = e.clientX;
         startY = e.clientY;
@@ -270,21 +389,43 @@ function makeResizable(el) {
         e.preventDefault();
         e.stopPropagation();
         bringFloatingWindowToFront(el);
-    });
+    };
 
-    document.addEventListener('mousemove', e => {
-        if (!isResizing) return;
+    const resize = (e) => {
+        if (!isResizing || isMobile) return; // Aseguramos que no se redimensione en móvil
 
         const newWidth = startWidth + (e.clientX - startX);
         const newHeight = startHeight + (e.clientY - startY);
 
-        el.style.width = `${Math.max(100, newWidth)}px`;
-        el.style.height = `${Math.max(100, newHeight)}px`;
-    });
+        el.style.width = `${Math.max(200, newWidth)}px`;
+        el.style.height = `${Math.max(150, newHeight)}px`;
+    };
 
-    document.addEventListener('mouseup', () => {
+    const stopResize = () => {
         isResizing = false;
+    };
+
+    resizer.addEventListener('mousedown', startResize);
+    document.addEventListener('mousemove', resize);
+    document.addEventListener('mouseup', stopResize);
+    // Agregamos soporte táctil para redimensionar si NO estamos en móvil
+    resizer.addEventListener('touchstart', (e) => {
+        if (isMobile) return;
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        startResize(e);
+    }, {
+        passive: false
     });
+    document.addEventListener('touchmove', (e) => {
+        if (!isResizing || isMobile) return;
+        e.clientX = e.touches[0].clientX;
+        e.clientY = e.touches[0].clientY;
+        resize(e);
+    }, {
+        passive: false
+    });
+    document.addEventListener('touchend', stopResize);
 }
 
 // =========================
@@ -292,7 +433,7 @@ function makeResizable(el) {
 // =========================
 
 // Variable global para almacenar los proyectos
-let projectsData = []; 
+let projectsData = [];
 
 async function loadProjectsFromGitHub() {
     const API_URL = 'proyectos.json'; // URL local
@@ -321,8 +462,6 @@ function renderProjectsInWindows(projects) {
 
         const windowContainer = document.querySelector(`#window-${category} .ventana-contenido`);
         if (!windowContainer) {
-            // Importante: si la categoría es 'skills', y no tiene un '.ventana-contenido',
-            // asumimos que su contenido es estático en el HTML. No hacemos nada aquí.
             if (category === "skills") {
                 return;
             }
@@ -341,20 +480,25 @@ function renderProjectsInWindows(projects) {
             openProjectDetail(project, windowContainer.parentElement);
         });
 
-        // Aplicar rotación y traslación aleatoria
-        const randomRotation = Math.random() * 6 - 3; // Un número entre -3 y 3 grados
-        const randomTranslateX = Math.random() * 10 - 5; // Entre -5px y 5px
-        const randomTranslateY = Math.random() * 10 - 5; // Entre -5px y 5px
-
-        div.style.transform = `rotate(${randomRotation}deg) translate(${randomTranslateX}px, ${randomTranslateY}px)`;
-        div.style.transition = 'transform 0.3s ease';
+        // Aplicar rotación y traslación aleatoria, solo si NO estamos en móvil
+        if (!isMobile) {
+            const randomRotation = Math.random() * 6 - 3; // Un número entre -3 y 3 grados
+            const randomTranslateX = Math.random() * 10 - 5; // Entre -5px y 5px
+            const randomTranslateY = Math.random() * 10 - 5; // Entre -5px y 5px
+            div.style.transform = `rotate(${randomRotation}deg) translate(${randomTranslateX}px, ${randomTranslateY}px)`;
+            div.style.transition = 'transform 0.3s ease';
+        } else {
+            // En móvil, aseguramos que no haya transformaciones aleatorias
+            div.style.transform = 'none';
+            div.style.transition = 'none';
+        }
 
         windowContainer.appendChild(div);
     });
 }
 
 // =========================
-// Abrir detalle proyecto
+// Abrir detalle proyecto (sin cambios significativos, ya está dentro de una ventana flotante)
 // =========================
 
 function openProjectDetail(project, parentWindow) {
@@ -458,8 +602,6 @@ function openProjectDetail(project, parentWindow) {
     const closeButton = parentWindow.querySelector('.close-floating');
     if (!closeButton) return;
 
-    // Reiniciar listeners previos para el botón 'close-floating'
-    // Esto es vital ya que openProjectDetail puede ser llamado múltiples veces para el mismo botón
     const oldReturnFunction = closeButton.dataset.returnListener;
     if (oldReturnFunction) {
         closeButton.removeEventListener('click', eval(oldReturnFunction));
@@ -471,32 +613,25 @@ function openProjectDetail(project, parentWindow) {
         delete closeButton.dataset.closeListener;
     }
 
-    // Configurar el botón en modo "volver"
     closeButton.classList.add('volver');
     closeButton.title = "Volver";
 
     const returnFunction = () => {
         detailContainer.style.display = 'none';
-        
-        // *** LA CORRECCIÓN CLAVE ***:
-        // 1. Aseguramos que el contenedor sea display: flex
-        projectList.style.display = 'flex'; 
-        // 2. Forzamos un reflow para que el navegador recalcule el layout de Flexbox
-        void projectList.offsetWidth; 
-        // 3. Volvemos a renderizar TODOS los proyectos para que se apliquen las transformaciones aleatorias
-        renderProjectsInWindows(projectsData); 
+
+        projectList.style.display = 'flex';
+        void projectList.offsetWidth;
+        renderProjectsInWindows(projectsData);
 
         closeButton.classList.remove('volver');
-        closeButton.title = "Cerrar"; // Restablecer título a 'Cerrar'
+        closeButton.title = "Cerrar";
         closeButton.removeEventListener('click', returnFunction);
-        // Limpiar la referencia de la función almacenada
         delete closeButton.dataset.returnListener;
 
-        // Volver a adjuntar el comportamiento de cierre por defecto (si no está en modo 'volver')
         const defaultCloseHandler = (e) => {
-            if (!e.currentTarget.classList.contains('volver')) { // Doble verificación de que no está en modo 'volver'
+            if (!e.currentTarget.classList.contains('volver')) {
                 e.stopPropagation();
-                parentWindow.style.display = 'none'; // Ocultar la ventana padre
+                parentWindow.style.display = 'none';
             }
         };
         closeButton.addEventListener('click', defaultCloseHandler);
@@ -504,6 +639,5 @@ function openProjectDetail(project, parentWindow) {
     };
 
     closeButton.addEventListener('click', returnFunction);
-    // Almacenar la referencia de la función como una cadena para permitir su eliminación posterior
     closeButton.dataset.returnListener = `(${returnFunction.toString()})`;
 }
