@@ -15,5 +15,15 @@
       "Photoshop",
       "Visual Studio"
     ]
+  },
+  {
+    "titulo": "Dibujo básico Processing",
+    "descripcion": "<p>En esta entrega se exploraron las formas primitivas de dibujo con Processing y las diferencias alternativas de composici&oacute;n que ofrecen el entorno y las coordenadas para crear un grafismo figurativo.</p>",
+    "imagenUrl": "https://cepoide.github.io/img/1752000813156-tp1.png",
+    "enlaceUrl": "https://github.com/cepoide/ipmi/tree/tp1/tp1",
+    "categoria": "University",
+    "skills": [
+      "Processing"
+    ]
   }
 ]
