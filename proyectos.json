@@ -25,5 +25,15 @@
     "skills": [
       "Processing"
     ]
+  },
+  {
+    "titulo": "Variables y Condicionales",
+    "descripcion": "<p>En esta entrega se abord&oacute; el uso de variables y condicionales, haciendo una presentaci&oacute;n al estilo PowerPoint. El tema elegido fue la novela gr&aacute;fica \"Invencible\"</p>\n<p>&nbsp;</p>\n<p><img src=\"https://i.ibb.co/4nsqMQqM/Captura-de-pantalla-2025-07-08-155551.png\" alt=\"\" width=\"500\" height=\"379\"><img src=\"https://i.ibb.co/svRrS3T5/Captura-de-pantalla-2025-07-08-155621.png\" alt=\"\" width=\"500\" height=\"476\"></p>",
+    "imagenUrl": "https://cepoide.github.io/img/1752001011255-pretp2.png",
+    "enlaceUrl": "https://github.com/cepoide/ipmi/tree/tp2",
+    "categoria": "University",
+    "skills": [
+      "Processing"
+    ]
   }
 ]
